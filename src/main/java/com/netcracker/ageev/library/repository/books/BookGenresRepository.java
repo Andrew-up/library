@@ -9,7 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface BookGenresRepository extends JpaRepository<BookGenres,Long> {
-
-
     Optional<BookGenres> findBookGenresById(Integer id);
 }
