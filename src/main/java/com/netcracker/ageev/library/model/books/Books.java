@@ -1,13 +1,10 @@
-package com.netcracker.ageev.library.entity.books;
+package com.netcracker.ageev.library.model.books;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity

@@ -1,7 +1,6 @@
-package com.netcracker.ageev.library.entity.users;
+package com.netcracker.ageev.library.model.users;
 
 import lombok.Data;
-import lombok.Getter;
 
 import javax.persistence.*;
 

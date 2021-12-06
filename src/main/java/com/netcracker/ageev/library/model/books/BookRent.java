@@ -1,13 +1,11 @@
-package com.netcracker.ageev.library.entity.books;
+package com.netcracker.ageev.library.model.books;
 
-import com.netcracker.ageev.library.entity.users.Employee;
-import com.netcracker.ageev.library.entity.users.Users;
+import com.netcracker.ageev.library.model.users.Employee;
+import com.netcracker.ageev.library.model.users.Users;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity

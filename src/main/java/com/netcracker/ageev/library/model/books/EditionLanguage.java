@@ -1,19 +1,17 @@
-package com.netcracker.ageev.library.entity.books;
+package com.netcracker.ageev.library.model.books;
 
 import lombok.Data;
-import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
-public class AgeLimit {
+public class EditionLanguage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
-    private String age;
+    private String language;
+
 }
