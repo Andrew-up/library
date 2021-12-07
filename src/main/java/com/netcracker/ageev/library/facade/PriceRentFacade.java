@@ -1,7 +1,7 @@
 package com.netcracker.ageev.library.facade;
 
 import com.netcracker.ageev.library.dto.PriceRentDTO;
-import com.netcracker.ageev.library.entity.books.BookRent;
+import com.netcracker.ageev.library.model.books.BookRent;
 import org.springframework.stereotype.Component;
 
 @Component

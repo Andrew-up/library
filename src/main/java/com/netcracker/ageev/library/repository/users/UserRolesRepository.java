@@ -1,7 +1,7 @@
 package com.netcracker.ageev.library.repository.users;
 
-import com.netcracker.ageev.library.entity.books.AgeLimit;
-import com.netcracker.ageev.library.entity.users.UserRoles;
+
+import com.netcracker.ageev.library.model.users.UserRoles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

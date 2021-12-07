@@ -1,10 +1,11 @@
 package com.netcracker.ageev.library.repository.books;
 
-import com.netcracker.ageev.library.entity.books.AgeLimit;
-import com.netcracker.ageev.library.entity.books.BookRent;
-import com.netcracker.ageev.library.entity.books.Books;
-import com.netcracker.ageev.library.entity.users.Employee;
-import com.netcracker.ageev.library.entity.users.Users;
+import com.netcracker.ageev.library.model.books.AgeLimit;
+
+import com.netcracker.ageev.library.model.books.BookRent;
+import com.netcracker.ageev.library.model.books.Books;
+import com.netcracker.ageev.library.model.users.Employee;
+import com.netcracker.ageev.library.model.users.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,7 @@
 package com.netcracker.ageev.library.service;
 
-import com.netcracker.ageev.library.entity.books.BookRent;
-import com.netcracker.ageev.library.entity.books.Books;
-import com.netcracker.ageev.library.entity.books.Price;
+
+import com.netcracker.ageev.library.model.books.BookRent;
 import com.netcracker.ageev.library.repository.books.BookRentRepository;
 import com.netcracker.ageev.library.repository.books.BooksRepository;
 import com.netcracker.ageev.library.repository.books.PriceRepository;

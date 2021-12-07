@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class UserRoles {
+public class UserRoles  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,5 +15,6 @@ public class UserRoles {
     private String jobTitle;
 
     @Column(nullable = false)
-    private Integer roleRights;
+    private String roleRights;
+
 }
