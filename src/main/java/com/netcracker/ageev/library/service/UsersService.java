@@ -1,6 +1,5 @@
 package com.netcracker.ageev.library.service;
 
-import com.netcracker.ageev.library.model.enums.ERole;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.payload.request.SignupRequest;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
@@ -28,21 +27,25 @@ public class UsersService {
     public Users createUser(SignupRequest userIn) {
         Users user = new Users();
         user.setEmail(userIn.getEmail());
-        user.setName(userIn.getName());
-        user.setSurname(userIn.getSurname());
+        user.setFirstname(userIn.getName());
+        user.setLastname(userIn.getSurname());
         user.setPassword(bCryptPasswordEncoder.encode(userIn.getPassword()));
-        user.getRoles().add(ERole.ROLE_USER);
+//        user.getRoles().add(ERole.ROLE_USER);
 
         try {
             LOG.info("Saving user {} ", userIn.getEmail());
             return userRepository.save(user);
         } catch (Exception e) {
             LOG.error("Error registration {} ", e.getMessage());
+
+            // TODO: добавить свое исключение сюда
             throw new UsernameNotFoundException("The user " + user.getEmail() + "already exist!");
+
         }
     }
 
-    public  Users getUserById(Integer userId){
+
+    public Users getUserById(Long userId) {
         return userRepository.findUsersById(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
 

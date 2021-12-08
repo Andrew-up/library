@@ -13,7 +13,6 @@ public class SignupRequest {
 
     @Email(message = "it should be email format")
     @NotBlank(message = "User email is request")
-
     private String email;
 
     @NotEmpty(message = "Please enter your name")

@@ -7,10 +7,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ConfigUserDetailsService implements UserDetailsService {
 
     private final UsersRepository userRepository;
@@ -33,14 +35,14 @@ public class ConfigUserDetailsService implements UserDetailsService {
         System.out.println("user: "+user);
         return new Users(
                 user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.getPassword(),
+                user.getFirstname(),
+                user.getLastname(),
                 user.getEmail(),
+                user.getPassword(),
                 authorities);
     }
 
-    public Users loadUserById(Integer id){
+    public Users loadUserById(Long id){
         return userRepository.findUsersById(id).orElse(null);
     }
 }

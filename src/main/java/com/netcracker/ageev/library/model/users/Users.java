@@ -6,28 +6,25 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
 public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(nullable = false, columnDefinition = "varchar(50)")
-    private String name;
+    private String firstname;
     @Column(nullable = false, columnDefinition = "varchar(50)")
-    private String surname;
+    private String lastname;
     @Column(nullable = true, columnDefinition = "date")
     private Date dateOfBirth;
     @Column(nullable = true)
     private String phone;
     @Column(nullable = true)
     private String address;
-    @Column(nullable = false, columnDefinition = "varchar(100)")
+    @Column(unique = true)
     private String email;
     @Column(nullable = true,length = 3000)
     private String password;
@@ -73,12 +70,13 @@ public class Users implements UserDetails {
         return true;
     }
 
-    public Users(Integer id, String name, String surname, String email, String password,Collection<? extends GrantedAuthority> authorities) {
+
+    public Users(Long id, String firstname, String lastname, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.password = password;
+        this.email = email;
         this.authorities = authorities;
     }
 

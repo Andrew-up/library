@@ -1,9 +1,8 @@
 package com.netcracker.ageev.library.controller;
 
-import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.payload.request.LoginRequest;
 import com.netcracker.ageev.library.payload.request.SignupRequest;
-import com.netcracker.ageev.library.payload.responce.JWTSuccessResponse;
+import com.netcracker.ageev.library.payload.responce.SuccessResponse;
 import com.netcracker.ageev.library.payload.responce.MessageResponse;
 import com.netcracker.ageev.library.service.UsersService;
 import com.netcracker.ageev.library.validators.ResponseErrorValidator;
@@ -11,16 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Basic;
 import javax.validation.Valid;
 
 @CrossOrigin
@@ -29,7 +26,8 @@ import javax.validation.Valid;
 @PreAuthorize("permitAll()")
 public class AuthColtroller {
 
-
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private ResponseErrorValidator responseErrorValidator;
@@ -41,12 +39,9 @@ public class AuthColtroller {
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
         ResponseEntity<Object> listErrors = responseErrorValidator.mappedValidatorService(bindingResult);
-
         if (!ObjectUtils.isEmpty(listErrors)) return listErrors;
-
         usersService.createUser(signupRequest);
         return ResponseEntity.ok((new MessageResponse("Registration successfully completed")));
-
     }
 
 
@@ -57,7 +52,10 @@ public class AuthColtroller {
         if (!ObjectUtils.isEmpty(listErrors)) {
             return listErrors;
         }
-        return  ResponseEntity.ok(new JWTSuccessResponse(true,"ddd"));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return  ResponseEntity.ok(new SuccessResponse(true,"ddd"));
 
     }
 

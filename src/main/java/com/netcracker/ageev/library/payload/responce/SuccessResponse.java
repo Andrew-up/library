@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class JWTSuccessResponse {
+public class SuccessResponse {
    private boolean success;
    private String token;
 }
