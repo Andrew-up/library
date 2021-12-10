@@ -1,6 +1,8 @@
 package com.netcracker.ageev.library.model.users;
 
+import com.netcracker.ageev.library.model.BaseEntity;
 import com.netcracker.ageev.library.model.enums.ERole;
+import com.netcracker.ageev.library.model.enums.Status;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,7 +12,7 @@ import java.util.*;
 
 @Data
 @Entity
-public class Users implements UserDetails {
+public class Users extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,12 +31,14 @@ public class Users implements UserDetails {
     @Column(nullable = true,length = 3000)
     private String password;
 
-    @Column(columnDefinition="boolean default false")
-    private Boolean archive;
 
     @ElementCollection(targetClass = ERole.class)
     @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
     private Set<ERole> roles = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
@@ -71,13 +75,14 @@ public class Users implements UserDetails {
     }
 
 
-    public Users(Long id, String firstname, String lastname, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public Users(Long id, String firstname, String lastname, String email, String password, Collection<? extends GrantedAuthority> authorities,Status status) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.password = password;
         this.email = email;
         this.authorities = authorities;
+        this.status = status;
     }
 
     public Users(){

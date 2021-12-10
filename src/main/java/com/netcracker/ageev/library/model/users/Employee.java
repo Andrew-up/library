@@ -9,9 +9,9 @@ import javax.persistence.*;
 @Entity
 public class Employee  extends BaseEntity {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Users.class)
     private Users users;

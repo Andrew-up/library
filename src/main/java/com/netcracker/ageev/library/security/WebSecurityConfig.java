@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.security;
 
 import com.netcracker.ageev.library.security.jwt.JWTAuthenticationEntryPoint;
+import com.netcracker.ageev.library.security.jwt.JWTAuthenticationFilter;
 import com.netcracker.ageev.library.service.ConfigUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -41,7 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(SecutiryConstants.SIGN_UP_URLS).permitAll()
+                .antMatchers(SecutiryConstants.IMAGE).permitAll()
                 .anyRequest().authenticated();
+
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -62,6 +67,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
+    @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter(){
+        return  new JWTAuthenticationFilter();
+    }
 
 
 }

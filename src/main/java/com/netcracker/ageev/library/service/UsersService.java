@@ -1,5 +1,7 @@
 package com.netcracker.ageev.library.service;
 
+import com.netcracker.ageev.library.model.enums.ERole;
+import com.netcracker.ageev.library.model.enums.Status;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.payload.request.SignupRequest;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
@@ -30,7 +32,8 @@ public class UsersService {
         user.setFirstname(userIn.getName());
         user.setLastname(userIn.getSurname());
         user.setPassword(bCryptPasswordEncoder.encode(userIn.getPassword()));
-//        user.getRoles().add(ERole.ROLE_USER);
+        user.setStatus(Status.ACTIVE);
+        user.getRoles().add(ERole.ROLE_USER);
 
         try {
             LOG.info("Saving user {} ", userIn.getEmail());
@@ -47,6 +50,10 @@ public class UsersService {
 
     public Users getUserById(Long userId) {
         return userRepository.findUsersById(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));
+    }
+
+    public Users findUsersByEmail(String email){
+        return userRepository.findUsersByEmail(email).orElseThrow(() ->  new UsernameNotFoundException("user not found"));
     }
 
 }

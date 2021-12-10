@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.model.books;
 
 
+import com.netcracker.ageev.library.model.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Authors implements Serializable {
+public class Authors extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

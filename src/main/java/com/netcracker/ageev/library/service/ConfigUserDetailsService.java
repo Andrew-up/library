@@ -24,6 +24,7 @@ public class ConfigUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // TODO: добавить свое исключение сюда
         Users user = userRepository.findUsersByEmail(username).orElseThrow(() -> new  UsernameNotFoundException("юзер не найден"+ username));
         return initUser(user);
     }
@@ -39,7 +40,8 @@ public class ConfigUserDetailsService implements UserDetailsService {
                 user.getLastname(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities);
+                authorities,
+                user.getStatus());
     }
 
     public Users loadUserById(Long id){

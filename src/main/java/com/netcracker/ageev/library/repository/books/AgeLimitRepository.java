@@ -19,4 +19,6 @@ import java.util.Optional;
 public interface AgeLimitRepository extends JpaRepository<AgeLimit,Long> {
 
     Optional<AgeLimit> findAgeLimitById(Integer id);
+
+    List<AgeLimit> findAllByOrderById();
 }

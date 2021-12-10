@@ -1,5 +1,6 @@
 package com.netcracker.ageev.library.model.books;
 
+import com.netcracker.ageev.library.model.BaseEntity;
 import com.netcracker.ageev.library.model.users.Employee;
 import com.netcracker.ageev.library.model.users.Users;
 import lombok.Data;
@@ -9,7 +10,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class BookRent {
+public class BookRent extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

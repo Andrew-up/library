@@ -3,6 +3,7 @@ package com.netcracker.ageev.library.security;
 public class SecutiryConstants {
 
     public static final String SIGN_UP_URLS ="/api/auth/**";
+    public static final String IMAGE ="/api/image/**/**";
     public static final String SECRET_KEY ="secret";
     public static final String TOKEN_PREFIX ="Bearer ";
     public static final String HEADER_STRING ="Authorization";

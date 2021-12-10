@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.model.books;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.netcracker.ageev.library.model.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class Books  {
+public class Books extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

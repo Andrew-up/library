@@ -1,12 +1,13 @@
 package com.netcracker.ageev.library.model.books;
 
+import com.netcracker.ageev.library.model.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-public class EditionLanguage {
+public class EditionLanguage  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
