@@ -8,7 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -26,23 +29,23 @@ public class Users extends BaseEntity implements UserDetails {
     private String phone;
     @Column(nullable = true)
     private String address;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = true,length = 3000)
+    @Column(nullable = false, length = 3000)
     private String password;
-
-
-    @ElementCollection(targetClass = ERole.class)
-    @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<ERole> roles = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @ElementCollection(targetClass = ERole.class)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<ERole> roles = new HashSet<>();
+
+
+
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
-
 
     @Override
     public String getUsername() {
@@ -75,7 +78,7 @@ public class Users extends BaseEntity implements UserDetails {
     }
 
 
-    public Users(Long id, String firstname, String lastname, String email, String password, Collection<? extends GrantedAuthority> authorities,Status status) {
+    public Users(Long id, String firstname, String lastname, String email, String password, Collection<? extends GrantedAuthority> authorities, Status status) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -85,7 +88,7 @@ public class Users extends BaseEntity implements UserDetails {
         this.status = status;
     }
 
-    public Users(){
+    public Users() {
 
     }
 }

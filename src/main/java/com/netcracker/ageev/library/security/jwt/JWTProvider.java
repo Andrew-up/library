@@ -9,66 +9,72 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static com.netcracker.ageev.library.security.SecutiryConstants.EXPIRATION_TIME;
+import static com.netcracker.ageev.library.security.SecutiryConstants.SECRET_KEY;
 
 
 @Component
-    public class JWTProvider {
-        public static final Logger LOG = LoggerFactory.getLogger(JWTProvider.class);
-
-public String generateToken(Authentication authentication){
-    Users user = (Users) authentication.getPrincipal();
-
+public class JWTProvider {
     Date now = new Date(System.currentTimeMillis());
+    Date expirationTime = new Date(now.getTime() + EXPIRATION_TIME);
+    public static final Logger LOG = LoggerFactory.getLogger(JWTProvider.class);
 
-    Date expirationTime = new Date(now.getTime()+ SecutiryConstants.EXPIRATION_TIME);
+    public String generateToken(Users user) {
 
-    String userId = Long.toString(user.getId());
+        Calendar calendar = new GregorianCalendar();
+//        Users user = (Users) authentication.getPrincipal();
+        String userId = Long.toString(user.getId());
 
-    Map<String,Object> claimsMap =  new HashMap<>();
-    claimsMap.put("id", userId);
-    claimsMap.put("email",user.getEmail());
-    claimsMap.put("firstname",user.getFirstname());
-    claimsMap.put("lastname",user.getLastname());
-    claimsMap.put("status",user.getStatus());
+        Map<String, Object> claimsMap = new HashMap<>();
+        claimsMap.put("id", userId);
+//    claimsMap.put("email",user.getEmail());
+        claimsMap.put("firstname", user.getFirstname());
+        claimsMap.put("lastname", user.getLastname());
+        claimsMap.put("status", user.getStatus());
 
-    String token  = Jwts.builder()
-            .setSubject(userId)
-            .addClaims(claimsMap)
-            .setIssuedAt(now)
-            .signWith(SignatureAlgorithm.HS512, SecutiryConstants.SECRET_KEY)
-            .compact();
-    return token;
-}
-
-public boolean validateToken(String token){
-    try {
-        Jwts.parser()
-                .setSigningKey(SecutiryConstants.SECRET_KEY)
-                .parseClaimsJws(token);
-        return true;
-    }
-    catch (ExpiredJwtException |
-            MalformedJwtException |
-            SignatureException |
-            UnsupportedJwtException |
-            IllegalArgumentException exception){
-        LOG.error(exception.getMessage());
-        return false;
+        String token = Jwts.builder()
+                .setSubject(userId)
+                .addClaims(claimsMap)
+                .setIssuedAt(now)
+                .setExpiration(expirationTime)
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
+        return token;
     }
 
-}
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException |
+                MalformedJwtException |
+                SignatureException |
+                UnsupportedJwtException |
+                IllegalArgumentException exception) {
+            LOG.error(exception.getMessage());
+            return false;
+        }
 
-public Long getUserIdFromToken(String token){
-    Claims claims = Jwts.parser()
-            .setSigningKey(SecutiryConstants.SECRET_KEY)
-            .parseClaimsJws(token)
-            .getBody();
-    String userId = (String) claims.get("id");
-    return Long.parseLong(userId);
-  }
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
+        String userId = (String) claims.get("id");
+        return Long.parseLong(userId);
+    }
+
+//    public String generateTokenFromUsername(Users user) {
+////        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
+////                .setExpiration(new Date((new Date()).getTime() + EXPIRATION_TIME)).signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+////                .compact();
+//    }
 
 }
 
