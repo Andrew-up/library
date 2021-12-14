@@ -1,9 +1,11 @@
 package com.netcracker.ageev.library.model.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netcracker.ageev.library.model.BaseEntity;
 import com.netcracker.ageev.library.model.enums.ERole;
 import com.netcracker.ageev.library.model.enums.Status;
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -32,7 +34,9 @@ public class Users extends BaseEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false, length = 3000)
+    @JsonIgnore
     private String password;
+
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -53,6 +57,7 @@ public class Users extends BaseEntity implements UserDetails {
     }
 
     @Override
+    @JsonProperty(value = "password")
     public String getPassword() {
         return password;
     }

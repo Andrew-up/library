@@ -1,22 +1,29 @@
 package com.netcracker.ageev.library.model.books;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netcracker.ageev.library.model.BaseEntity;
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
 @Entity
-public class Books extends BaseEntity {
+public class Books {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Authors.class,cascade = CascadeType.ALL)
-    private Authors authors;
+//    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Authors.class,cascade = CascadeType.ALL)
+//    @OneToOne(fetch = FetchType.LAZY,targetEntity = Authors.class,mappedBy = "id")
+
+
+
+    @JoinColumn(name = "authors")
+    private Integer authors;
 
     @Column(nullable = false, columnDefinition = "varchar(100)")
     private String bookTitle;
@@ -35,9 +42,14 @@ public class Books extends BaseEntity {
     @ManyToOne(targetEntity = Publisher.class,fetch = FetchType.LAZY)
     @JoinColumn(name = "publisherId")
     private Publisher publisherId;
-
+    @JsonIgnore
     @Column(nullable = true)
     private String series;
+
+    @JsonProperty(value = "series")
+    public String getSeries(){
+        return series;
+    }
 
     @ManyToOne(targetEntity = CoverCode.class,fetch = FetchType.LAZY)
     @JoinColumn(name = "coverId")

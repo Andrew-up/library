@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class AgeLimit extends BaseEntity {
+public class AgeLimit  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Price extends BaseEntity {
+public class Price   {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

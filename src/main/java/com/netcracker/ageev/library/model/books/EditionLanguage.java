@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class EditionLanguage  extends BaseEntity {
+public class EditionLanguage    {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

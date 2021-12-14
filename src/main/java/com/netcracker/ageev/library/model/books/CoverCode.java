@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class CoverCode extends BaseEntity {
+public class CoverCode  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

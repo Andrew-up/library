@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Publisher extends BaseEntity {
+public class Publisher   {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -12,7 +12,8 @@ import java.util.List;
 
 @Data
 @Entity
-public class Authors extends BaseEntity implements Serializable {
+
+public class Authors implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +32,8 @@ public class Authors extends BaseEntity implements Serializable {
     private String patronymic;
 
     @Column(nullable = true, columnDefinition = "date")
-    private Date dateOfBirth;
+    private String dateOfBirth;
+
+
 
 }

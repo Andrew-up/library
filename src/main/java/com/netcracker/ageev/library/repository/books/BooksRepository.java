@@ -5,6 +5,7 @@ import com.netcracker.ageev.library.model.books.Books;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,4 +19,6 @@ public interface BooksRepository extends JpaRepository<Books,Long> {
     Optional<Books> findBooksById(Long id);
 
     Optional<Books> findBooksBySeries(String series);
+
+    List<Books> findAllByOrderById();
 }
