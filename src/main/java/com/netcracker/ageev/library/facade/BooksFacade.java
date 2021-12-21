@@ -17,6 +17,8 @@ public class BooksFacade {
         booksDTO.setTranslation(books.getTranslation());
         booksDTO.setGenreCode(books.getGenreCode().getGenre());
 
+
+
         return booksDTO;
     }
 }

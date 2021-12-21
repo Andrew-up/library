@@ -5,6 +5,7 @@ public class SecutiryConstants {
     public static final String SIGN_UP_URLS ="/api/auth/**";
     public static final String IMAGE ="/api/image/**/**";
     public static final String AUTHORS_API ="/api/authors/**/**";
+    public static final String BOOK_GENRES_API ="/api/genres/**/**";
     public static final String SECRET_KEY ="secret";
     public static final String REFRESH_SECRET_KEY ="jwt_secret_key_refresh";
     public static final String TOKEN_PREFIX ="Bearer ";

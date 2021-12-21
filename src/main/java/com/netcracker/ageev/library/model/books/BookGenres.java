@@ -7,10 +7,10 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class BookGenres extends BaseEntity {
+public class BookGenres {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer bookGenresId;
 
     @Column(nullable = false)
     private String genre;

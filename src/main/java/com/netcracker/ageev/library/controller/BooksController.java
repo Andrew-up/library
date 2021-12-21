@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.PermitAll;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,6 +33,8 @@ public class BooksController {
 
     @GetMapping("/all")
     public ResponseEntity<List<BooksDTO>> getAllBooks(){
+
+
         List<BooksDTO> booksDTOS = booksService.getAllBooks()
                 .stream()
                 .map(booksFacade::booksDTO)

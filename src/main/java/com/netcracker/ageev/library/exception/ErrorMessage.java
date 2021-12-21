@@ -16,4 +16,8 @@ public class ErrorMessage {
         this.message = message;
         this.description = description;
     }
+
+    public ErrorMessage(String message){
+        this.message = message;
+    }
 }

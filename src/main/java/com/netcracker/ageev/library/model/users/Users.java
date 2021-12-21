@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Data
 @Entity
-public class Users extends BaseEntity implements UserDetails {
+public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +37,6 @@ public class Users extends BaseEntity implements UserDetails {
     @JsonIgnore
     private String password;
 
-
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -45,8 +44,6 @@ public class Users extends BaseEntity implements UserDetails {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<ERole> roles = new HashSet<>();
-
-
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;

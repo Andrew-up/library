@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+
 @Service
 public class UsersService {
 
@@ -48,12 +50,22 @@ public class UsersService {
     }
 
 
+    public Users getCurrentUser(Principal principal){
+        return getUserByPrincipal(principal);
+    }
+
     public Users getUserById(Long userId) {
         return userRepository.findUsersById(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
 
     public Users findUsersByEmail(String email){
         return userRepository.findUsersByEmail(email).orElseThrow(() ->  new UsernameNotFoundException("user not found"));
+    }
+
+    public Users getUserByPrincipal(Principal principal) {
+        String email = principal.getName();
+        return userRepository.findUsersByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username" + email));
     }
 
 }

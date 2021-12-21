@@ -24,7 +24,7 @@ import java.security.Principal;
 @RequestMapping("/api/image")
 @CrossOrigin
 @PermitAll()
-public class FileUploadController {
+public class ImageUploadController {
     @Autowired
     private ImageRepository imageRepository;
 
@@ -44,6 +44,16 @@ public class FileUploadController {
         return ResponseEntity.ok(new MessageResponse("Ошибка загрузки, возможно файл не добавлен"));
     }
 
+    @PostMapping("/book/{id}")
+    public ResponseEntity<MessageResponse> uploadImageBooks(
+            @RequestParam("file") MultipartFile file, @PathVariable("id") String id) throws IOException {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            imageService.uploadImageBooks(file,id);
+            return ResponseEntity.ok(new MessageResponse("Image uploaded successfully"));
+        }
+        return ResponseEntity.ok(new MessageResponse("Ошибка загрузки, возможно файл не добавлен"));
+    }
+
     @RequestMapping(value = "/book/{id}", method = RequestMethod.GET, produces = "image/jpg")
     public @ResponseBody byte[] getFile(@PathVariable String id)  {
         try {
@@ -52,11 +62,36 @@ public class FileUploadController {
             String image = "/"+imageService.getImage(id);
           File file = new File(uploadPath+image);
             System.out.println(file.toString());
-            // Prepare buffered image.
+
             BufferedImage img = ImageIO.read(file);
-            // Create a byte array output stream.
+
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
-            // Write to output stream
+
+            ImageIO.write(img, "jpg", bao);
+            return bao.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+//    @GetMapping("{booksId}/image")
+//    public ResponseEntity<Image> getPostImage(@PathVariable String booksId){
+//        Image postImage = imageService.getBooksImage(Long.parseLong(booksId));
+//        return  new ResponseEntity<>(postImage,HttpStatus.OK);
+//    }
+
+
+    @RequestMapping(value = "{booksId}/image", method = RequestMethod.GET, produces = "image/jpg")
+    public @ResponseBody byte[] getPostImage(@PathVariable String booksId)  {
+        try {
+            // Retrieve image from the classpath.
+//            InputStream is = getClass().getClassLoader().getResourceAsStream("image/test.jpg");
+            String image = "/"+imageService.getImage(booksId);
+            File file = new File(uploadPath+"/books"+image);
+            System.out.println(file.toString());
+            BufferedImage img = ImageIO.read(file);
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+
             ImageIO.write(img, "jpg", bao);
             return bao.toByteArray();
         } catch (IOException e) {
