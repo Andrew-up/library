@@ -70,7 +70,7 @@ public class AuthColtroller {
             return listErrors;
         }
         if(block(loginRequest.getEmail())){
-            return ResponseEntity.ok(new SuccessResponse(false,"Учетная запись заблокирована",""));
+            return ResponseEntity.ok(new SuccessResponse(false,"Учетная запись заблокирована","",""));
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
@@ -79,7 +79,8 @@ public class AuthColtroller {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(usersDetails.getId());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = SecutiryConstants.TOKEN_PREFIX+ jwtProvider.generateToken(usersDetails);
-        return  ResponseEntity.ok(new SuccessResponse(true,jwt, refreshToken.getToken()));
+
+        return  ResponseEntity.ok(new SuccessResponse(true,jwt, refreshToken.getToken(),usersDetails.getERole().name()));
 
     }
 

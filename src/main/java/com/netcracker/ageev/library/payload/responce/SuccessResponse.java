@@ -9,4 +9,5 @@ public class SuccessResponse {
    private boolean success;
    private String token;
    private String refreshToken;
+   private String role;
 }

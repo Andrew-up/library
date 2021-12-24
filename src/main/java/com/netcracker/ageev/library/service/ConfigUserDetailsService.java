@@ -41,7 +41,8 @@ public class ConfigUserDetailsService implements UserDetailsService {
                 user.getEmail(),
                 user.getPassword(),
                 authorities,
-                user.getStatus());
+                user.getStatus(),
+                user.getERole());
     }
 
     public Users loadUserById(Long id){

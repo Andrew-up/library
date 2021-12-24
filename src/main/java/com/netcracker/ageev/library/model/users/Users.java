@@ -40,6 +40,10 @@ public class Users implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
+    private ERole eRole;
+
+    //:TODO Убрать дублирование ролей
     @ElementCollection(targetClass = ERole.class)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -80,7 +84,7 @@ public class Users implements UserDetails {
     }
 
 
-    public Users(Long id, String firstname, String lastname, String email, String password, Collection<? extends GrantedAuthority> authorities, Status status) {
+    public Users(Long id, String firstname, String lastname, String email, String password, Collection<? extends GrantedAuthority> authorities, Status status, ERole eRole) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -88,6 +92,7 @@ public class Users implements UserDetails {
         this.email = email;
         this.authorities = authorities;
         this.status = status;
+        this.eRole = eRole;
     }
 
     public Users() {
