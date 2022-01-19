@@ -45,7 +45,7 @@ public class AgeLimitService {
     public AgeLimit createAgeLimit(AgeLimitDTO ageLimitDTO,Principal principal){
         Users users = getUserByPrincipal(principal);
         AgeLimit ageLimit = new AgeLimit();
-        ageLimit.setAge(ageLimitDTO.getAgeLimit());
+        ageLimit.setAge(ageLimitDTO.getAgeLimitName());
 //        ageLimit.setCreated(ageLimit.getCreated());
 //        ageLimit.setUpdated(ageLimitDTO.getUpdated());
         LOG.info("Create Age Limit for user:{}", users.getEmail());
@@ -59,6 +59,6 @@ public class AgeLimitService {
     }
 
     public List<AgeLimit> getAllAgeLimit(){
-        return ageLimitRepository.findAllByOrderById();
+        return ageLimitRepository.findAllByOrderByAge();
     }
 }

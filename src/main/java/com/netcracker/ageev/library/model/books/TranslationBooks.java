@@ -1,18 +1,17 @@
 package com.netcracker.ageev.library.model.books;
 
-import com.netcracker.ageev.library.model.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-public class EditionLanguage    {
+public class TranslationBooks {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer languageId;
+    private Integer translationId;
 
     @Column(nullable = false)
-    private String languageName;
-
+    private String translationName;
 }

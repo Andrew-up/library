@@ -21,4 +21,6 @@ public interface AgeLimitRepository extends JpaRepository<AgeLimit,Long> {
     Optional<AgeLimit> findAgeLimitById(Integer id);
 
     List<AgeLimit> findAllByOrderById();
+
+    List<AgeLimit> findAllByOrderByAge();
 }

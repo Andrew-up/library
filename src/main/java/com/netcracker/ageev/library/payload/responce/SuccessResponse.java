@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SuccessResponse {
    private boolean success;
-   private String token;
+   private String accessToken;
    private String refreshToken;
    private String role;
 }

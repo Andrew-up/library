@@ -13,6 +13,5 @@ public class SecutiryConstants {
     public static final String CONTENT_TYPE ="Application/json";
     public static final long EXPIRATION_TIME = 900_000; //15 минут
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = 86400000; //1 день
-
     public static final String GUEST_BOOKS ="/api/books/**";
 }

@@ -92,7 +92,7 @@ public class AuthColtroller {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String token = jwtUtils.generateToken(user);
+                    String token = SecutiryConstants.TOKEN_PREFIX+ jwtUtils.generateToken(user);
                     return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,

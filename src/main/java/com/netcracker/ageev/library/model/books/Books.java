@@ -1,22 +1,28 @@
 package com.netcracker.ageev.library.model.books;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
-public class Books {
+public class Books implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "authors")
-    private Integer authors;
+    @JoinColumn(name = "authors_id")
+    @ManyToOne
+    private Authors authors;
 
     @Column(nullable = false, columnDefinition = "varchar(100)")
     private String bookTitle;
@@ -25,9 +31,9 @@ public class Books {
     @JoinColumn(nullable = true)
     private BookGenres genreCode;
 
-    @Column(nullable = false, columnDefinition = "date")
+    @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-mm-dd")
-    private Date releaseDate;
+    private String releaseDate;
 
     @ManyToOne(targetEntity = Publisher.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "publisherId")
@@ -61,7 +67,6 @@ public class Books {
 
     //    @Column(nullable = true,name = "imageBookId")
 
-
     public Books() {
 
     }
@@ -78,5 +83,18 @@ public class Books {
             return bookGenres;
         }
     }
+    public Authors getAuthors(){
+        Authors authors= new Authors();
+        try {
+            if (authors.getFirstname() != null) {
+                authors.setId(authors.getId());
+            }
+            return authors;
+        } catch (NullPointerException e) {
+            authors.setFirstname("Not found author");
+            return authors;
+        }
+    }
+
 
 }

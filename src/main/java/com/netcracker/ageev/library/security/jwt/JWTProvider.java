@@ -17,12 +17,13 @@ import static com.netcracker.ageev.library.security.SecutiryConstants.SECRET_KEY
 
 @Component
 public class JWTProvider {
-    Date now = new Date(System.currentTimeMillis());
-    Date expirationTime = new Date(now.getTime() + EXPIRATION_TIME);
+
+
     public static final Logger LOG = LoggerFactory.getLogger(JWTProvider.class);
 
     public String generateToken(Users user) {
-
+        Date now = new Date(System.currentTimeMillis());
+        Date expirationTime = new Date(now.getTime() + EXPIRATION_TIME);
         Calendar calendar = new GregorianCalendar();
 //        Users user = (Users) authentication.getPrincipal();
         String userId = Long.toString(user.getId());
@@ -67,7 +68,7 @@ public class JWTProvider {
                 .parseClaimsJws(token)
                 .getBody();
         String userId = (String) claims.get("id");
-        return Long.parseLong(userId);
+         return Long.parseLong(userId);
     }
 
 //    public String generateTokenFromUsername(Users user) {

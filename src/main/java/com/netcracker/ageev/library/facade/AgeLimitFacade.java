@@ -15,8 +15,8 @@ public class AgeLimitFacade {
 
     public AgeLimitDTO ageLimitDTO(AgeLimit ageLimit){
         AgeLimitDTO ageLimitDTO = new AgeLimitDTO();
-        ageLimitDTO.setId(ageLimit.getId());
-        ageLimitDTO.setAgeLimit(ageLimit.getAge());
+        ageLimitDTO.setAgeLimitId(ageLimit.getId());
+        ageLimitDTO.setAgeLimitName(ageLimit.getAge());
 //        ageLimitDTO.setCreated(ageLimit.getCreated());
 //        ageLimitDTO.setUpdated(ageLimit.getUpdated());
 //        ageLimitDTO.setCreatedBy(ageLimit.getCreatedBy());

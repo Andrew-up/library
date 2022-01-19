@@ -1,0 +1,55 @@
+package com.netcracker.ageev.library.controller;
+
+import com.netcracker.ageev.library.dto.CoverCodeDTO;
+import com.netcracker.ageev.library.dto.EditionLanguageDTO;
+import com.netcracker.ageev.library.facade.EditionLanguageFacade;
+import com.netcracker.ageev.library.model.books.CoverCode;
+import com.netcracker.ageev.library.model.books.EditionLanguage;
+import com.netcracker.ageev.library.service.EditionLanguageService;
+import com.netcracker.ageev.library.validators.ResponseErrorValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/books/edition-language")
+@CrossOrigin
+public class EditionLanguageController {
+    private EditionLanguageService editionLanguageService;
+    private EditionLanguageFacade editionLanguageFacade;
+    private ResponseErrorValidator responseErrorValidator;
+
+    @Autowired
+    public EditionLanguageController(EditionLanguageService editionLanguageService, EditionLanguageFacade editionLanguageFacade, ResponseErrorValidator responseErrorValidator) {
+        this.editionLanguageService = editionLanguageService;
+        this.editionLanguageFacade = editionLanguageFacade;
+        this.responseErrorValidator = responseErrorValidator;
+    }
+
+
+    @GetMapping("/all")
+    ResponseEntity<List<EditionLanguageDTO>> getAllLanguage(){
+        List<EditionLanguageDTO> editionLanguageDTOS = editionLanguageService.getAllLanguage()
+                .stream()
+                .map(editionLanguageFacade::editionLanguageDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(editionLanguageDTOS, HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Object> createEditionLanguage(@Valid @RequestBody EditionLanguageDTO editionLanguageDTO, BindingResult bindingResult, Principal principal) {
+        ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
+        if(!ObjectUtils.isEmpty(listError)) return listError;
+        EditionLanguage editionLanguage = editionLanguageService.createEditionLanguage(editionLanguageDTO,principal);
+        EditionLanguageDTO editionLanguageDTO1 = editionLanguageFacade.editionLanguageDTO(editionLanguage);
+        return new ResponseEntity<>(editionLanguageDTO1,HttpStatus.OK);
+    }
+}

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 
 @Service
 public class UsersService {
@@ -53,6 +54,10 @@ public class UsersService {
 
     public Users getCurrentUser(Principal principal){
         return getUserByPrincipal(principal);
+    }
+
+    public List<Users> getAllUsers(){
+        return userRepository.findAllByOrderById();
     }
 
     public Users getUserById(Long userId) {

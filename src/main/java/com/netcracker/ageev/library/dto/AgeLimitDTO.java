@@ -6,10 +6,6 @@ import java.util.Date;
 
 @Data
 public class AgeLimitDTO {
-    private Integer id;
-    private String ageLimit;
-    private Date created;
-    private Date updated;
-    private String createdBy;
-    private String updatedBy;
+    private Integer ageLimitId;
+    private String ageLimitName;
 }

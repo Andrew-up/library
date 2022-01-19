@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin
@@ -31,5 +34,13 @@ public class UsersController {
         Users user = userService.getCurrentUser(principal);
         UserDTO userDTO = userFacade.userToUserDTO(user);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        List<UserDTO> userDTOS = userService.getAllUsers()
+                .stream()
+                .map(userFacade::userToUserDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(userDTOS,HttpStatus.OK);
     }
 }

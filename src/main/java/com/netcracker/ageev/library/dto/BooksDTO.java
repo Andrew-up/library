@@ -1,19 +1,27 @@
 package com.netcracker.ageev.library.dto;
 
-import com.netcracker.ageev.library.model.books.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Date;
-
-@Data
+@Getter
+@Setter
 public class BooksDTO {
 
+    private Long bookId;
     private String bookTitle;
-    private String releaseDate;
+    private String bookReleaseDate;
     private Integer numberPages;
-    private String series;
-    private String ISBN;
+    private String bookSeries;
+    private String nameISBN;
     private String translation;
     private String genreCode;
+    private Integer authors;
+    private String authorsName;
+    private Integer languageId;
+    private Integer publisherId;
+    private Integer ageLimitCode;
+//    private String series;
+//    private Integer authorsName;
+//    private Authors authors;
 
 }
