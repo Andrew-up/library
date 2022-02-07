@@ -49,4 +49,13 @@ public class TranslationService {
         return listError;
     }
 
+    public TranslationBooks getTranslationById(Integer id){
+        try {
+            return  translationRepository.findTranslationBooksByTranslationId(id).orElseThrow(() ->  new NullPointerException("not found"));
+        }
+        catch (NullPointerException e){
+            return  null;
+        }
+    }
+
 }

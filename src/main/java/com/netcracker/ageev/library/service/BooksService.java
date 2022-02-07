@@ -22,15 +22,19 @@ public class BooksService {
     public static final Logger LOG = LoggerFactory.getLogger(BooksService.class);
     private final BooksRepository booksRepository;
     private final UsersRepository usersRepository;
-
     private final AuthorsService authorsService;
+    private final BookGenresService bookGenresService;
+    private final SeriesService bookSeriesService;
+    private final TranslationService translationService;
 
     @Autowired
-    public BooksService(BooksRepository booksRepository, UsersRepository usersRepository, AuthorsService authorsService) {
+    public BooksService(BooksRepository booksRepository, UsersRepository usersRepository, AuthorsService authorsService,BookGenresService bookGenresService,SeriesService bookSeriesService, TranslationService translationService) {
         this.booksRepository = booksRepository;
         this.usersRepository = usersRepository;
-
         this.authorsService = authorsService;
+        this.bookGenresService = bookGenresService;
+        this.bookSeriesService = bookSeriesService;
+        this.translationService = translationService;
     }
 
 
@@ -48,9 +52,10 @@ public class BooksService {
             return books;
         }
         books.setBookTitle(booksDTO.getBookTitle());
-//        System.out.println("testtttttt"+authorsService.getAuthorsById(booksDTO.getAuthors()));
-//        books.setAuthors(authorsService.getAuthorsById(booksDTO.getAuthors()));
         books.setAuthors(authorsService.getAuthorsById(booksDTO.getAuthors()));
+        books.setGenreCode(bookGenresService.getGenresById(booksDTO.getGenreCode()));
+        books.setSeries(bookSeriesService.getSeriesById(booksDTO.getBookSeries()));
+        books.setTranslation(translationService.getTranslationById(booksDTO.getTranslationId()));
 //        books.setAgeLimitCode(booksDTO.get);
 //        books.setGenreCode(booksDTO.getGenreCode());
         books.setReleaseDate(booksDTO.getBookReleaseDate());
@@ -72,7 +77,7 @@ public class BooksService {
         if(booksDTO.getAuthors()==null){
             listError.add("Автор не корректен");
         }
-        if(booksDTO.getGenreCode().equals("null")){
+        if(booksDTO.getGenreCode()==null){
             listError.add("Жанр не корректен");
         }
         if(booksDTO.getBookReleaseDate().equals("null")){
@@ -84,9 +89,9 @@ public class BooksService {
         if(booksDTO.getNumberPages()==null){
             listError.add("кол-во страниц не корректно");
         }
-        if(booksDTO.getBookSeries()==null){
-            listError.add("Серия не корректна");
-        }
+//        if(booksDTO.getBookSeries()==null){
+//            listError.add("Серия не корректна");
+//        }
         if(booksDTO.getNameISBN().equals("null")){
             listError.add("ISBN не корректен");
         }
@@ -96,9 +101,9 @@ public class BooksService {
         if(booksDTO.getLanguageId()==null){
             listError.add("Язык издания не корректен");
         }
-        if(booksDTO.getTranslation().equals("null")){
-            listError.add("Автор перевода не корректен");
-        }
+//        if(booksDTO.getTranslationId()==null){
+//            listError.add("Автор перевода не корректен");
+//        }
         return listError;
     }
 

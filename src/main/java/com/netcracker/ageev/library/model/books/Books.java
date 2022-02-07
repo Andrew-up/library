@@ -46,8 +46,8 @@ public class Books implements Serializable {
     @JoinColumn(name = "coverId")
     private CoverCode coverId;
 
-    @Column(nullable = true)
-    private String series;
+    @ManyToOne(targetEntity = Series.class,fetch = FetchType.LAZY)
+    private Series series;
 
     @Column(nullable = true)
     private String ISBN;
@@ -59,8 +59,8 @@ public class Books implements Serializable {
     @JoinColumn(name = "languageId")
     private EditionLanguage languageId;
 
-    @Column(nullable = true)
-    private String translation;
+    @ManyToOne(targetEntity = TranslationBooks.class, fetch = FetchType.LAZY)
+    private TranslationBooks translation;
 
     @Column(name = "ImageId")
     private String imageId;
@@ -84,7 +84,7 @@ public class Books implements Serializable {
         }
     }
     public Authors getAuthors(){
-        Authors authors= new Authors();
+        Authors authors = new Authors();
         try {
             if (authors.getFirstname() != null) {
                 authors.setId(authors.getId());
@@ -96,5 +96,31 @@ public class Books implements Serializable {
         }
     }
 
+    public Series getSeries(){
+        Series seriesObj = new Series();
+        try {
+            if (series.getSeriesName() != null) {
+                seriesObj.setSeriesName(series.getSeriesName());
+            }
+            return series;
+        } catch (NullPointerException e) {
+            seriesObj.setSeriesName("Not found series");
+            return seriesObj;
+        }
+    }
+
+    public TranslationBooks getTranslation(){
+        TranslationBooks translationBooks = new TranslationBooks();
+        try {
+            if(translation.getTranslationName()!=null){
+                translationBooks.setTranslationName(translation.getTranslationName());
+            }
+            return translation;
+        }
+        catch (NullPointerException e){
+            translationBooks.setTranslationName("Not found translation");
+            return translationBooks;
+        }
+    }
 
 }

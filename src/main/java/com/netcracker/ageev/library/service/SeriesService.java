@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.SeriesDTO;
+import com.netcracker.ageev.library.model.books.BookGenres;
 import com.netcracker.ageev.library.model.books.Series;
 import com.netcracker.ageev.library.repository.books.SeriesRepository;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ public class SeriesService {
     public List<Series> getAllSeries(){
         return seriesRepository.findAllByOrderBySeriesId();
     }
+
     public Series createSeries(SeriesDTO seriesDTO, Principal principal){
         Series series = new Series();
         ArrayList<String> arrayListError =  isSeriesCorrect(seriesDTO);
@@ -43,6 +45,14 @@ public class SeriesService {
             listError.add("Имя серии не корректно");
         }
         return listError;
+    }
+
+    public Series getSeriesById(Integer id) {
+        try {
+            return seriesRepository.findSeriesBySeriesId(id).orElseThrow(() -> new NullPointerException("not found"));
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
 }

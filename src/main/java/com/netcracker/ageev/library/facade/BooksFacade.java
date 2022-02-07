@@ -13,21 +13,17 @@ public class BooksFacade {
         booksDTO.setBookTitle(books.getBookTitle());
         booksDTO.setBookReleaseDate(books.getReleaseDate());
         booksDTO.setNumberPages(books.getNumberPages());
-        booksDTO.setBookSeries(books.getSeries());
+        booksDTO.setBookSeries(books.getSeries().getSeriesId());
         booksDTO.setNameISBN(books.getISBN());
-        booksDTO.setTranslation(books.getTranslation());
-        booksDTO.setGenreCode(books.getGenreCode().getGenre());
-        booksDTO.setAuthors(books.getAuthors().getId());
-//        try{
-//            booksDTO.setAuthors(books.getAuthors().getId());
-////        booksDTO.setAuthorsName(books.getAuthors());
-//            booksDTO.setAuthorsName(books.getAuthors().getFirstname() +" "+ books.getAuthors().getLastname());
-//        }
-//        catch (NullPointerException e){
-//            booksDTO.setAuthors(0);
-//            booksDTO.setAuthorsName("Authors not found");
-//        }
+        booksDTO.setTranslationId(books.getTranslation().getTranslationId());
 
+        booksDTO.setGenreName(books.getGenreCode().getGenre());
+        booksDTO.setAuthors(books.getAuthors().getId());
+        booksDTO.setSeriesName(books.getSeries().getSeriesName());
+        booksDTO.setTranslationName(books.getTranslation().getTranslationName());
+//        System.out.println(books.getSeries().getSeriesName());
+//        System.out.println(books.getSeries().getSeriesId());
+//        System.out.println(books.getGenreCode().getGenre());
         return booksDTO;
     }
 }

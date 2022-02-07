@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(SecutiryConstants.SIGN_UP_URLS).permitAll()
 //                .antMatchers(SecutiryConstants.IMAGE).permitAll()
-//                .antMatchers(SecutiryConstants.GUEST_BOOKS).permitAll()
+                .antMatchers(SecutiryConstants.GUEST_BOOKS).permitAll()
 //                .antMatchers(SecutiryConstants.AUTHORS_API).permitAll()
 //                .antMatchers(SecutiryConstants.BOOK_GENRES_API).permitAll()
                 .anyRequest().authenticated();

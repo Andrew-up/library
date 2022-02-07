@@ -11,12 +11,7 @@ import java.util.Optional;
 @Repository
 public interface AuthorsRepository extends JpaRepository<Authors,Long> {
 
-
     List<Authors> findAllByOrderById();
-
     Optional<Authors> findAuthorsById(Integer id);
-
-
-
 
 }

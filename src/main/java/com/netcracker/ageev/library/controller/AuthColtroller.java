@@ -36,22 +36,16 @@ public class AuthColtroller {
 
     @Autowired
     JWTProvider jwtUtils;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private ResponseErrorValidator responseErrorValidator;
-
     @Autowired
     private UsersService usersService;
-
     @Autowired
     RefreshTokenService refreshTokenService;
-
     @Autowired
     private JWTProvider jwtProvider;
-
 
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
@@ -60,8 +54,6 @@ public class AuthColtroller {
         usersService.createUser(signupRequest);
         return ResponseEntity.ok((new MessageResponse("Registration successfully completed")));
     }
-
-
     //Авторизация
     @PostMapping("/signin")
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
@@ -79,9 +71,7 @@ public class AuthColtroller {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(usersDetails.getId());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = SecutiryConstants.TOKEN_PREFIX+ jwtProvider.generateToken(usersDetails);
-
         return  ResponseEntity.ok(new SuccessResponse(true,jwt, refreshToken.getToken(),usersDetails.getERole().name()));
-
     }
 
     @PostMapping("/refreshtoken")
@@ -98,7 +88,6 @@ public class AuthColtroller {
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                         "Refresh token is not in database!"));
     }
-
 
     private boolean block(String email){
         if(usersService.findUsersByEmail(email).getStatus() == Status.ACTIVE){

@@ -1,22 +1,16 @@
 package com.netcracker.ageev.library.model.books;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-
 public class Authors {
 
     @Id
@@ -35,9 +29,7 @@ public class Authors {
     @Column(nullable = true, columnDefinition = "varchar(50)")
     private String patronymic;
 
-    //    @Column(nullable = true, columnDefinition = "date")
-//    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-mm-yyyy")
+    @Column(nullable = true)
     private String dateOfBirth;
-//
-//    private String errorList;
+
 }

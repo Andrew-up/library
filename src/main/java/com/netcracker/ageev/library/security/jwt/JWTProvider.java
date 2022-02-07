@@ -68,7 +68,7 @@ public class JWTProvider {
                 .parseClaimsJws(token)
                 .getBody();
         String userId = (String) claims.get("id");
-         return Long.parseLong(userId);
+        return Long.parseLong(userId);
     }
 
 //    public String generateTokenFromUsername(Users user) {

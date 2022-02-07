@@ -25,14 +25,15 @@ public class BookGenresService {
     public BookGenresService(BookGenresRepository bookGenresRepository) {
         this.bookGenresRepository = bookGenresRepository;
     }
-    public List<BookGenres> getAllBookGenres(){
+
+    public List<BookGenres> getAllBookGenres() {
         return bookGenresRepository.findAllByOrderByBookGenresId();
     }
 
-    public BookGenres createGenre(BookGenresDTO bookGenresDTO, Principal principal){
+    public BookGenres createGenre(BookGenresDTO bookGenresDTO, Principal principal) {
         BookGenres bookGenres = new BookGenres();
-        ArrayList<String> arrayListError =  isGenreCorrect(bookGenresDTO);
-        if (!ObjectUtils.isEmpty(arrayListError)){
+        ArrayList<String> arrayListError = isGenreCorrect(bookGenresDTO);
+        if (!ObjectUtils.isEmpty(arrayListError)) {
             bookGenres.setGenre(arrayListError.toString());
             return bookGenres;
         }
@@ -40,12 +41,20 @@ public class BookGenresService {
         return bookGenresRepository.save(bookGenres);
     }
 
-    private ArrayList<String> isGenreCorrect(BookGenresDTO bookGenresDTO){
+    private ArrayList<String> isGenreCorrect(BookGenresDTO bookGenresDTO) {
         ArrayList<String> listError = new ArrayList<>();
-        if(bookGenresDTO.getGenresName().isEmpty()){
+        if (bookGenresDTO.getGenresName().isEmpty()) {
             listError.add("Имя жанра не корректно");
         }
         return listError;
+    }
+
+    public BookGenres getGenresById(Integer id) {
+        try {
+            return bookGenresRepository.findBookGenresByBookGenresId(id).orElseThrow(() -> new NullPointerException("not found"));
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
 }

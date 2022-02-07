@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface BookGenresRepository extends JpaRepository<BookGenres,Long> {
 
     List<BookGenres> findAllByOrderByBookGenresId();
+    Optional<BookGenres> findBookGenresByBookGenresId(Integer id);
 }

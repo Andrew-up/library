@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @PermitAll()
 public class BooksController {
-
-
     private BooksService booksService;
     private BooksFacade booksFacade;
     private ResponseErrorValidator responseErrorValidator;
@@ -48,7 +46,6 @@ public class BooksController {
         return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
     }
 
-
     @PostMapping("/create")
     public ResponseEntity<Object> createBook(@Valid @RequestBody BooksDTO booksDTO,
                                              BindingResult bindingResult, Principal principal) {
@@ -58,6 +55,5 @@ public class BooksController {
         BooksDTO booksDTO1 = booksFacade.booksDTO(books);
         return new ResponseEntity<>(booksDTO1, HttpStatus.OK);
     }
-
 
 }
