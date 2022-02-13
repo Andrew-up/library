@@ -27,6 +27,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Base64;
 
 @CrossOrigin
 @RestController
@@ -64,8 +65,12 @@ public class AuthColtroller {
         if(block(loginRequest.getEmail())){
             return ResponseEntity.ok(new SuccessResponse(false,"Учетная запись заблокирована","",""));
         }
+
+        byte[] decodePassword = Base64.getDecoder().decode(loginRequest.getPassword());
+        String decodedString = new String(decodePassword);
+
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),decodedString));
 
         Users usersDetails =(Users) authentication.getPrincipal();
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(usersDetails.getId());

@@ -16,11 +16,18 @@ public class BooksFacade {
         booksDTO.setBookSeries(books.getSeries().getSeriesId());
         booksDTO.setNameISBN(books.getISBN());
         booksDTO.setTranslationId(books.getTranslation().getTranslationId());
-
         booksDTO.setGenreName(books.getGenreCode().getGenre());
         booksDTO.setAuthors(books.getAuthors().getId());
         booksDTO.setSeriesName(books.getSeries().getSeriesName());
         booksDTO.setTranslationName(books.getTranslation().getTranslationName());
+        booksDTO.setAuthorsFullName(books.getFullName());
+        booksDTO.setPublisherName(books.getPublisherId().getName());
+        booksDTO.setCoverId(books.getCoverId().getId());
+        booksDTO.setCoverName(books.getCoverId().getName());
+        booksDTO.setAgeLimitCode(books.getAgeLimitCode().getId());
+        booksDTO.setAgeLimitName(books.getAgeLimitCode().getAge());
+        booksDTO.setLanguageId(books.getLanguageId().getLanguageId());
+        booksDTO.setLanguageName(books.getLanguageId().getLanguageName());
 //        System.out.println(books.getSeries().getSeriesName());
 //        System.out.println(books.getSeries().getSeriesId());
 //        System.out.println(books.getGenreCode().getGenre());

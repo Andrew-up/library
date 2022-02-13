@@ -29,14 +29,52 @@ public class BookRent  {
     private Users usersId;
 
     @Column(nullable = true)
-    private Date dateIssue;
+    private String dateIssue;
 
     @Column(nullable = true)
-    private Date dateReturn;
+    private String dateReturn;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Price.class)
     @JoinColumn(name = "priceId",nullable = true)
     private Price priceId;
 
+    public Books getBooksId() {
+        Books books = new Books();
+        try {
+            if(booksId.getId()!=null){
+                books.setId(booksId.getId());
+            }
+            return booksId;
+        }catch (NullPointerException e){
+            books.setBookTitle("Книга не найдена");
+            return books;
+        }
+    }
+
+    public Users getUsersId() {
+        Users users = new Users();
+        try {
+            if(usersId.getId()!=null){
+                users.setId(usersId.getId());
+            }
+            return usersId;
+        }catch (NullPointerException e){
+            users.setFirstname("Юзер не найден");
+            return users;
+        }
+    }
+
+    public Price getPriceId() {
+        Price price = new Price();
+        try {
+            if(priceId.getId()!=null){
+                price.setId(priceId.getId());
+            }
+            return priceId;
+        }catch (NullPointerException e){
+            price.setPriceRent(0.0);
+            return price;
+        }
+    }
 
 }

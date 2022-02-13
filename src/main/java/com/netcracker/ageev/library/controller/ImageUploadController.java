@@ -59,14 +59,15 @@ public class ImageUploadController {
         try {
             // Retrieve image from the classpath.
 //            InputStream is = getClass().getClassLoader().getResourceAsStream("image/test.jpg");
-            String image = "/"+imageService.getImage(id);
+
+            String image = "/books/"+imageService.getImage(id);
           File file = new File(uploadPath+image);
-            System.out.println(file.toString());
-
+//            System.out.println(file.toString());
             BufferedImage img = ImageIO.read(file);
-
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
-
+            if(img == null){
+                System.out.println("Картинка не найдена");
+            }
             ImageIO.write(img, "jpg", bao);
             return bao.toByteArray();
         } catch (IOException e) {
@@ -93,6 +94,7 @@ public class ImageUploadController {
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
 
             ImageIO.write(img, "jpg", bao);
+
             return bao.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);

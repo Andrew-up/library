@@ -2,6 +2,7 @@ package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.PublisherDTO;
 import com.netcracker.ageev.library.model.books.Publisher;
+import com.netcracker.ageev.library.model.books.TranslationBooks;
 import com.netcracker.ageev.library.repository.books.PublisherRepository;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
 import org.slf4j.Logger;
@@ -50,6 +51,15 @@ public class PublisherService {
             listError.add("Имя жанра не корректно");
         }
         return listError;
+    }
+
+    public Publisher getPublisherById(Integer id){
+        try {
+            return  publisherRepository.findPublisherById(id).orElseThrow(() ->  new NullPointerException("not found"));
+        }
+        catch (NullPointerException e){
+            return  null;
+        }
     }
 
 }

@@ -54,7 +54,13 @@ public class ImageService {
     // TODO: Добавить свое исключение
     public String getImage(String idImage) {
         long id = Long.parseLong(idImage);
-        String image = imageRepository.findById(id).orElseThrow(() -> new NullPointerException("message")).getFileName();
+        String image = null;
+        try {
+            image = imageRepository.findByBooksId(id).orElseThrow(() -> new NullPointerException("message")).getFileName();
+        } catch (NullPointerException e) {
+            image = "/not_found.jpg";
+            e.printStackTrace();
+        }
         return image;
 
     }

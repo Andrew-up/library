@@ -3,6 +3,7 @@ package com.netcracker.ageev.library.controller;
 import com.netcracker.ageev.library.dto.AgeLimitDTO;
 import com.netcracker.ageev.library.dto.BooksDTO;
 import com.netcracker.ageev.library.facade.BooksFacade;
+import com.netcracker.ageev.library.model.Image;
 import com.netcracker.ageev.library.model.books.AgeLimit;
 import com.netcracker.ageev.library.model.books.Books;
 import com.netcracker.ageev.library.service.BooksService;
@@ -43,6 +44,7 @@ public class BooksController {
                 .stream()
                 .map(booksFacade::booksDTO)
                 .collect(Collectors.toList());
+
         return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
     }
 

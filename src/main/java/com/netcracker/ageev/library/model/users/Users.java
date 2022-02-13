@@ -43,11 +43,11 @@ public class Users implements UserDetails {
     @Enumerated(EnumType.STRING)
     private ERole eRole;
 
-    //:TODO Убрать дублирование ролей
-    @ElementCollection(targetClass = ERole.class)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<ERole> roles = new HashSet<>();
+//    //:TODO Убрать дублирование ролей
+//    @ElementCollection(targetClass = ERole.class)
+//    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+//    @Enumerated(EnumType.STRING)
+//    private Set<ERole> roles = new HashSet<>();
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;

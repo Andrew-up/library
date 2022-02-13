@@ -16,15 +16,24 @@ public class BooksDTO {
     private Integer translationId;
     private Integer genreCode;
     private Integer authors;
-    private String authorsName;
     private Integer languageId;
     private Integer publisherId;
     private Integer ageLimitCode;
+    private Integer coverId;
 
     //name
     private String genreName;
     private String seriesName;
     private String translationName;
+    private String authorsFullName;
+    private String publisherName;
+    private String coverName;
+    private String ageLimitName;
+    private String languageName;
+
+    //Image
+
+    private Integer imageToBookId;
 //    private String series;
 //    private Integer authorsName;
 //    private Authors authors;

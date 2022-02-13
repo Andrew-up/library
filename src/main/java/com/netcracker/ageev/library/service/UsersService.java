@@ -37,7 +37,7 @@ public class UsersService {
         user.setPassword(bCryptPasswordEncoder.encode(userIn.getPassword()));
         user.setStatus(Status.ACTIVE);
         user.setERole(ERole.ROLE_USER);
-        user.getRoles().add(ERole.ROLE_USER);
+//        user.getRoles().add(ERole.ROLE_USER);
 
         try {
             LOG.info("Saving user {} ", userIn.getEmail());

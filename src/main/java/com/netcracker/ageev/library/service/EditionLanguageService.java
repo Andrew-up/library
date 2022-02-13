@@ -3,6 +3,7 @@ package com.netcracker.ageev.library.service;
 import com.netcracker.ageev.library.dto.EditionLanguageDTO;
 import com.netcracker.ageev.library.dto.TranslationDTO;
 import com.netcracker.ageev.library.model.books.EditionLanguage;
+import com.netcracker.ageev.library.model.books.Publisher;
 import com.netcracker.ageev.library.repository.books.EditionLanguageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,17 @@ public class EditionLanguageService {
         }
         return listError;
     }
+
+
+    public EditionLanguage getLanguageById(Integer id){
+        try {
+            return  editionLanguageRepository.findEditionLanguageByLanguageId(id).orElseThrow(() ->  new NullPointerException("not found"));
+        }
+        catch (NullPointerException e){
+            return  null;
+        }
+    }
+
 
 }
 

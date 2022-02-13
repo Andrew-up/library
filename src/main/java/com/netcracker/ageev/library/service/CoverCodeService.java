@@ -3,6 +3,7 @@ package com.netcracker.ageev.library.service;
 import com.netcracker.ageev.library.dto.BookGenresDTO;
 import com.netcracker.ageev.library.dto.CoverCodeDTO;
 import com.netcracker.ageev.library.model.books.CoverCode;
+import com.netcracker.ageev.library.model.books.Publisher;
 import com.netcracker.ageev.library.repository.books.CoverCodeRepository;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
 import org.slf4j.Logger;
@@ -48,5 +49,14 @@ public class CoverCodeService {
             listError.add("Тип обложки не корректен");
         }
         return listError;
+    }
+
+    public CoverCode getCoverCodeById(Integer id){
+        try {
+            return  coverCodeRepository.findCoverCodeById(id).orElseThrow(() ->  new NullPointerException("not found"));
+        }
+        catch (NullPointerException e){
+            return  null;
+        }
     }
 }

@@ -19,5 +19,6 @@ public interface BookRentRepository extends JpaRepository<BookRent,Long> {
     Optional<BookRent> findBookRentByUsersId(Users usersId);
 
     List<BookRent> findAllByOrderByDateIssue();
+    List<BookRent> findAllByOrderByIdAsc();
 
 }

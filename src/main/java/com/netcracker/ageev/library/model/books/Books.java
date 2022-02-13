@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.awt.print.Book;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @Entity
 public class Books implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,6 +63,8 @@ public class Books implements Serializable {
 
     @ManyToOne(targetEntity = TranslationBooks.class, fetch = FetchType.LAZY)
     private TranslationBooks translation;
+
+    private String fullName;
 
     @Column(name = "ImageId")
     private String imageId;
@@ -121,6 +125,67 @@ public class Books implements Serializable {
             translationBooks.setTranslationName("Not found translation");
             return translationBooks;
         }
+    }
+
+    public Publisher getPublisherId(){
+        Publisher publisher = new Publisher();
+        try {
+            if(publisherId.getName()!=null){
+                publisher.setName(translation.getTranslationName());
+            }
+            return publisherId;
+        }
+        catch (NullPointerException e){
+            publisher.setName("Not found publisher");
+            return publisher;
+        }
+    }
+
+    public CoverCode getCoverId(){
+        CoverCode coverCode = new CoverCode();
+        try {
+            if(coverId.getName()!=null){
+                coverCode.setName(coverId.getName());
+            }
+            return coverId;
+        }
+        catch (NullPointerException e){
+            coverCode.setName("Not found coverCode");
+            return coverCode;
+        }
+    }
+
+    public AgeLimit getAgeLimitCode(){
+        AgeLimit ageLimit = new AgeLimit();
+        try {
+            if(ageLimitCode.getAge()!=null){
+                ageLimit.setAge(ageLimitCode.getAge());
+            }
+            return ageLimitCode;
+        }
+        catch (NullPointerException e){
+            ageLimit.setAge("Not found ageLimit");
+            return ageLimit;
+        }
+    }
+
+    public EditionLanguage getLanguageId(){
+        EditionLanguage editionLanguage = new EditionLanguage();
+        try {
+            if(languageId.getLanguageName()!=null){
+                editionLanguage.setLanguageName(languageId.getLanguageName());
+            }
+            return languageId;
+        }
+        catch (NullPointerException e){
+            editionLanguage.setLanguageName("Not found edition language");
+            return editionLanguage;
+        }
+    }
+
+
+    public String getFullName() {
+        return this.authors.getFirstname() +" " +this.authors.getLastname() +" " + this.authors.getPatronymic();
     }
 
 }
