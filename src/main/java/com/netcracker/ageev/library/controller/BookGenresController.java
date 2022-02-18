@@ -3,6 +3,7 @@ package com.netcracker.ageev.library.controller;
 import com.netcracker.ageev.library.dto.BookGenresDTO;
 import com.netcracker.ageev.library.facade.BookGenresFacade;
 import com.netcracker.ageev.library.model.books.BookGenres;
+import com.netcracker.ageev.library.payload.responce.MessageResponse;
 import com.netcracker.ageev.library.service.BookGenresService;
 import com.netcracker.ageev.library.validators.ResponseErrorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,21 @@ public class BookGenresController {
         BookGenres bookGenres = bookGenresService.createGenre(bookGenresDTO,principal);
         BookGenresDTO bookGenresDTO1 = bookGenresFacade.bookGenresDTO(bookGenres);
         return new ResponseEntity<>(bookGenresDTO1,HttpStatus.OK);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Object> updateGenre(@Valid @RequestBody BookGenresDTO bookGenresDTO, BindingResult bindingResult, Principal principal){
+        ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
+        if (!ObjectUtils.isEmpty(listError)) return listError;
+        BookGenres bookGenres = bookGenresService.updateGenre(bookGenresDTO);
+        BookGenresDTO bookGenresDTO1 = bookGenresFacade.bookGenresDTO(bookGenres);
+        return new ResponseEntity<>(bookGenresDTO1,HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Object> deleteGenre(@Valid @RequestBody String id, BindingResult bindingResult, Principal principal){
+          bookGenresService.deleteGenre(Integer.parseInt(id));
+        return new ResponseEntity<>(new MessageResponse("The genre book "+ id + " was removed"),HttpStatus.OK);
     }
 
 }

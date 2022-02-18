@@ -26,17 +26,16 @@ public class RefreshTokenService {
         this.usersRepository = usersRepository;
     }
 
+
     public Optional<RefreshToken> findByToken(String token){
         return refreshTokenRepository.findByToken(token);
     }
 
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
-
         refreshToken.setUser(usersRepository.findById(userId).get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         refreshToken.setToken(UUID.randomUUID().toString());
-
         refreshToken = refreshTokenRepository.save(refreshToken);
         return refreshToken;
     }

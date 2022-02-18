@@ -2,11 +2,10 @@ package com.netcracker.ageev.library.security.jwt;
 
 
 import com.netcracker.ageev.library.model.users.Users;
-import com.netcracker.ageev.library.security.SecutiryConstants;
+import com.netcracker.ageev.library.service.token.RefreshTokenService;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -46,6 +45,8 @@ public class JWTProvider {
     }
 
     public boolean validateToken(String token) {
+
+
         try {
             Jwts.parser()
                     .setSigningKey(SECRET_KEY)
