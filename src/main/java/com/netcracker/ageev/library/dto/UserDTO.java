@@ -8,13 +8,14 @@ import javax.validation.constraints.NotEmpty;
 public class UserDTO {
 
     private Long id;
-    @NotEmpty
     private String firstname;
-    @NotEmpty
     private String lastname;
     private String username;
     private String info;
     private String status;
     private String Role;
+    private String Phone;
+    private String address;
+    private String dateOfBirth;
 
 }

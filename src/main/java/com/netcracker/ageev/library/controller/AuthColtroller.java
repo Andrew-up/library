@@ -52,6 +52,7 @@ public class AuthColtroller {
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
         ResponseEntity<Object> listErrors = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listErrors)) return listErrors;
+
         usersService.createUser(signupRequest);
         return ResponseEntity.ok((new MessageResponse("Registration successfully completed")));
     }

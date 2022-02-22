@@ -25,12 +25,14 @@ public class Users implements UserDetails {
     private String firstname;
     @Column(nullable = false, columnDefinition = "varchar(50)")
     private String lastname;
-    @Column(nullable = true, columnDefinition = "date")
-    private Date dateOfBirth;
+    @Column(nullable = true)
+    private String dateOfBirth;
     @Column(nullable = true)
     private String phone;
     @Column(nullable = true)
     private String address;
+    @Column(nullable = true)
+    private String info;
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false, length = 3000)
@@ -42,12 +44,6 @@ public class Users implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private ERole eRole;
-
-//    //:TODO Убрать дублирование ролей
-//    @ElementCollection(targetClass = ERole.class)
-//    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-//    @Enumerated(EnumType.STRING)
-//    private Set<ERole> roles = new HashSet<>();
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;

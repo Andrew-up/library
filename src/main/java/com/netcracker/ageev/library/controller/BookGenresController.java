@@ -57,7 +57,7 @@ public class BookGenresController {
     public ResponseEntity<Object> updateGenre(@Valid @RequestBody BookGenresDTO bookGenresDTO, BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
-        BookGenres bookGenres = bookGenresService.updateGenre(bookGenresDTO);
+        BookGenres bookGenres = bookGenresService.updateGenre(bookGenresDTO,principal);
         BookGenresDTO bookGenresDTO1 = bookGenresFacade.bookGenresDTO(bookGenres);
         return new ResponseEntity<>(bookGenresDTO1,HttpStatus.OK);
     }

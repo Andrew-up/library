@@ -8,11 +8,11 @@ import com.netcracker.ageev.library.validators.ResponseErrorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,4 +43,16 @@ public class UsersController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(userDTOS,HttpStatus.OK);
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<Object> updateUser(@Valid @RequestBody UserDTO userDTO,
+                                             BindingResult bindingResult, Principal principal) {
+
+        ResponseEntity<Object> listErrors = responseErrorValidator.mappedValidatorService(bindingResult);
+        if (!ObjectUtils.isEmpty(listErrors)) return listErrors;
+        Users user = userService.updateUser(userDTO, principal);
+        UserDTO userUpdated = userFacade.userToUserDTO(user);
+        return new ResponseEntity<>(userUpdated, HttpStatus.OK);
+    }
+
 }

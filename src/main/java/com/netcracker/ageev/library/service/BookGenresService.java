@@ -2,11 +2,13 @@ package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.BookGenresDTO;
 import com.netcracker.ageev.library.model.books.BookGenres;
-import com.netcracker.ageev.library.model.books.Books;
+import com.netcracker.ageev.library.model.enums.ERole;
+import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BookGenresRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -26,7 +28,7 @@ public class BookGenresService {
     private final UsersService usersService;
 
     @Autowired
-    public BookGenresService(BookGenresRepository bookGenresRepository,UsersService usersService) {
+    public BookGenresService(BookGenresRepository bookGenresRepository, UsersService usersService) {
         this.bookGenresRepository = bookGenresRepository;
         this.usersService = usersService;
     }
@@ -36,31 +38,60 @@ public class BookGenresService {
     }
 
     public BookGenres createGenre(BookGenresDTO bookGenresDTO, Principal principal) {
+        Users users = usersService.getUserByPrincipal(principal);
         BookGenres bookGenres = new BookGenres();
+        if (usersService.DataAccessToUser(users)) {
+            return getBookGenres(bookGenresDTO, bookGenres);
+        } else {
+            bookGenres.setGenre("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
+            return bookGenres;
+        }
+    }
+
+    // TODO: 22.02.2022
+    //    -  Добавить свои исключения
+
+    public BookGenres updateGenre(BookGenresDTO bookGenresDTO, Principal principal) {
+        Users users = usersService.getUserByPrincipal(principal);
+        BookGenres bookGenres = bookGenresRepository.findBookGenresByBookGenresId(bookGenresDTO.getBookGenresId()).orElseThrow(() -> new UsernameNotFoundException("Genre not found"));
+        if (usersService.DataAccessToUser(users)) {
+            return getBookGenres(bookGenresDTO, bookGenres);
+        } else {
+            bookGenres.setGenre("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
+            return bookGenres;
+        }
+    }
+
+    public void deleteGenre(Integer bookId) {
+        Optional<BookGenres> delete = bookGenresRepository.findBookGenresByBookGenresId(bookId);
+        delete.ifPresent(bookGenresRepository::delete);
+    }
+
+
+    private BookGenres getBookGenres(BookGenresDTO bookGenresDTO, BookGenres bookGenres) {
         ArrayList<String> arrayListError = isGenreCorrect(bookGenresDTO);
         if (!ObjectUtils.isEmpty(arrayListError)) {
             bookGenres.setGenre(arrayListError.toString());
             return bookGenres;
         }
-        bookGenres.setGenre(bookGenresDTO.getGenresName());
-        return bookGenresRepository.save(bookGenres);
-    }
-
-    public BookGenres updateGenre(BookGenresDTO bookGenresDTO){
-        BookGenres bookGenres = bookGenresRepository.findBookGenresByBookGenresId(bookGenresDTO.getBookGenresId()).orElseThrow(() -> new UsernameNotFoundException("Genre not found" ));
-        bookGenres.setGenre(bookGenresDTO.getGenresName());
-        return bookGenresRepository.save(bookGenres);
-    }
-
-    public void deleteGenre(Integer bookId){
-        Optional<BookGenres> delete = bookGenresRepository.findBookGenresByBookGenresId(bookId);
-        delete.ifPresent(bookGenresRepository::delete);
+        try {
+            bookGenres.setGenre(bookGenresDTO.getGenresName());
+            bookGenresRepository.save(bookGenres);
+            return bookGenres;
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            bookGenres.setBookGenresId(-2000);
+            bookGenres.setGenre("Ошибка при добавлении в бд, такая запись уже есть");
+            return bookGenres;
+        }
     }
 
     private ArrayList<String> isGenreCorrect(BookGenresDTO bookGenresDTO) {
         ArrayList<String> listError = new ArrayList<>();
-        if (bookGenresDTO.getGenresName().isEmpty()) {
-            listError.add("Имя жанра не корректно");
+        String regex = "(^[a-zA-Zа-яА-Я]+)|((^[a-zA-Zа-яА-Я]+\\s[a-zA-Zа-яА-Я]+))";
+        boolean result = bookGenresDTO.getGenresName().matches(regex);
+        if (!result) {
+            listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;
     }
@@ -72,5 +103,6 @@ public class BookGenresService {
             return null;
         }
     }
+
 
 }

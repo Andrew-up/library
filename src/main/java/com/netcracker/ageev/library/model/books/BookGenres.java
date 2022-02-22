@@ -12,7 +12,7 @@ public class BookGenres {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bookGenresId;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String genre;
 
 }

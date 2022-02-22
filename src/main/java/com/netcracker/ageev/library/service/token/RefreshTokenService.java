@@ -1,10 +1,12 @@
 package com.netcracker.ageev.library.service.token;
 
+import com.netcracker.ageev.library.exception.ErrorMessage;
 import com.netcracker.ageev.library.exception.TokenRefreshException;
 import com.netcracker.ageev.library.model.RefreshToken;
 import com.netcracker.ageev.library.repository.RefreshTokenRepository;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -33,11 +35,26 @@ public class RefreshTokenService {
 
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(usersRepository.findById(userId).get());
-        refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
-        refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken = refreshTokenRepository.save(refreshToken);
-        return refreshToken;
+
+        RefreshToken refreshToken1 = null;
+        try {
+            refreshToken1  = refreshTokenRepository.findByUserId(userId).orElseThrow(() -> new NullPointerException("Юзер не найден"));
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+        }
+        if(refreshToken1!=null){
+            refreshToken1.setUser(usersRepository.findById(userId).get());
+            refreshToken1.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
+            refreshToken1.setToken(UUID.randomUUID().toString());
+            return refreshTokenRepository.save(refreshToken1);
+        }
+        else {
+            refreshToken.setUser(usersRepository.findById(userId).get());
+            refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
+            refreshToken.setToken(UUID.randomUUID().toString());
+        }
+        return refreshTokenRepository.save(refreshToken);
     }
 
     public RefreshToken verifyExpiration(RefreshToken token) {

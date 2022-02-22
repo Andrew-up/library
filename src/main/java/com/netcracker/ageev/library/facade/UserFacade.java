@@ -15,6 +15,10 @@ public class UserFacade {
         userDTO.setUsername(user.getUsername());
         userDTO.setStatus(user.getStatus().name());
         userDTO.setRole(user.getERole().name());
+        userDTO.setPhone(user.getPhone());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setDateOfBirth(user.getDateOfBirth());
+        userDTO.setInfo(user.getInfo());
         return userDTO;
     }
 }
