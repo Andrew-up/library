@@ -29,11 +29,7 @@ public class AgeLimitService {
 
 
     private final AgeLimitRepository ageLimitRepository;
-
-    @Autowired
     private final UsersRepository usersRepository;
-
-    @Autowired
     private final UsersService usersService;
 
     @Autowired
@@ -41,6 +37,10 @@ public class AgeLimitService {
         this.ageLimitRepository = ageLimitRepository;
         this.usersRepository = usersRepository;
         this.usersService = usersService;
+    }
+
+    public List<AgeLimit> getAllAgeLimit() {
+        return ageLimitRepository.findAllByOrderById();
     }
 
     public AgeLimit getAgeLimitById(Integer id) {
@@ -51,27 +51,24 @@ public class AgeLimitService {
         Users users = usersService.getUserByPrincipal(principal);
         List<String> arrayListError = new ArrayList<>(isAgeLimitCorrect(ageLimitDTO));
         AgeLimit ageLimit = new AgeLimit();
-        if(!ObjectUtils.isEmpty(arrayListError)){
+        if (!ObjectUtils.isEmpty(arrayListError)) {
             ageLimit.setAge(arrayListError.toString());
             return ageLimit;
         }
         if (usersService.DataAccessToUser(users)) {
             return saveAgeLimit(ageLimitDTO, ageLimit);
         } else {
-            ageLimit.setAge("Для пользователя с ролью " + users.getERole() + " обновление невозможно");
+            ageLimit.setAge("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
             return ageLimit;
         }
     }
 
-    public List<AgeLimit> getAllAgeLimit() {
-        return ageLimitRepository.findAllByOrderById();
-    }
 
     public AgeLimit updateAgeLimit(AgeLimitDTO ageLimitDTO, Principal principal) {
         Users users = usersService.getUserByPrincipal(principal);
         List<String> arrayListError = new ArrayList<>(isAgeLimitCorrect(ageLimitDTO));
         AgeLimit ageLimit = ageLimitRepository.findAgeLimitById(ageLimitDTO.getAgeLimitId()).orElseThrow(() -> new UsernameNotFoundException("Age Limit not found"));
-        if(!ObjectUtils.isEmpty(arrayListError)){
+        if (!ObjectUtils.isEmpty(arrayListError)) {
             ageLimit.setAge(arrayListError.toString());
             return ageLimit;
         }
@@ -86,7 +83,7 @@ public class AgeLimitService {
 
     public String deleteGenre(Integer ageLimitId, Principal principal) {
         Users users = usersService.getUserByPrincipal(principal);
-        if (users.getERole().equals(ERole.ROLE_WORKER) || (users.getERole().equals(ERole.ROLE_ADMIN))) {
+        if (usersService.DataAccessToUser(users)) {
             Optional<AgeLimit> delete = ageLimitRepository.findAgeLimitById(ageLimitId);
             delete.ifPresent(ageLimitRepository::delete);
             return "Возрастное ограничение с id: " + ageLimitId + " удалено";
@@ -101,22 +98,22 @@ public class AgeLimitService {
         ArrayList<String> listError = new ArrayList<>();
         String regex = "(^[0-9]{1,2}\\+)|(^[0-9]{1,2}-[0-9]{1,2})";
         boolean result = ageLimitDTO.getAgeLimitName().matches(regex);
-        if(!result){
+        if (!result) {
             listError.add("Выражение не прошло проверку по формату записи");
         }
-        if(result){
+        if (result) {
             String[] words = ageLimitDTO.getAgeLimitName().split("-");
-            if(words.length==2){
+            if (words.length == 2) {
                 firstNumber = Integer.parseInt(words[0]);
                 secondNumber = Integer.parseInt(words[1]);
-                if(firstNumber>secondNumber){
-                  listError.add("Первое число не может быть больше второго!");
+                if (firstNumber > secondNumber) {
+                    listError.add("Первое число не может быть больше второго!");
                 }
-                if(firstNumber>21 || secondNumber>21){
+                if (firstNumber > 21 || secondNumber > 21) {
                     listError.add("Не может быть возрастного ограничения выше 21 года");
                 }
-                if(firstNumber==secondNumber){
-                    listError.add("Следует писать: " +firstNumber+"+");
+                if (firstNumber == secondNumber) {
+                    listError.add("Следует писать: " + firstNumber + "+");
                 }
             }
         }
@@ -125,7 +122,7 @@ public class AgeLimitService {
     }
 
     private AgeLimit saveAgeLimit(AgeLimitDTO ageLimitDTO, AgeLimit ageLimit) {
-        try{
+        try {
             ageLimit.setAge(ageLimitDTO.getAgeLimitName());
             ageLimitRepository.save(ageLimit);
             return ageLimit;

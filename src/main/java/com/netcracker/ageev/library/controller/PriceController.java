@@ -1,10 +1,8 @@
 package com.netcracker.ageev.library.controller;
 
-import com.netcracker.ageev.library.dto.AgeLimitDTO;
 import com.netcracker.ageev.library.dto.PriceRentDTO;
 import com.netcracker.ageev.library.facade.PriceRentFacade;
-import com.netcracker.ageev.library.model.books.AgeLimit;
-import com.netcracker.ageev.library.model.books.Price;
+import com.netcracker.ageev.library.payload.responce.MessageResponse;
 import com.netcracker.ageev.library.service.PriceService;
 import com.netcracker.ageev.library.validators.ResponseErrorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +45,24 @@ public class PriceController {
                                                  BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return  listError;
-        Price price = priceService.createPrice(priceRentDTO,principal);
-        PriceRentDTO priceRentDTO1 = priceFacade.priceDTO(price);
-        return new ResponseEntity<>(priceRentDTO1,HttpStatus.OK);
+
+        String resultCreate = priceService.createPrice(priceRentDTO,principal);
+        return new ResponseEntity<>(new MessageResponse(resultCreate),HttpStatus.OK);
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<Object> updatePrice(@Valid @RequestBody PriceRentDTO priceRentDTO, BindingResult bindingResult, Principal principal){
+        ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
+        if (!ObjectUtils.isEmpty(listError)) return listError;
+        String resultUpdate = priceService.updatePrice(priceRentDTO,principal);
+        return new ResponseEntity<>(new MessageResponse(resultUpdate),HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Object> deletePrice(@Valid @RequestBody String id, Principal principal){
+        String resultDelete = priceService.deletePrice(Integer.parseInt(id),principal);
+        return new ResponseEntity<>(new MessageResponse(resultDelete),HttpStatus.OK);
+    }
+
 
 }

@@ -1,9 +1,7 @@
 package com.netcracker.ageev.library.controller;
 
-import com.netcracker.ageev.library.dto.CoverCodeDTO;
 import com.netcracker.ageev.library.dto.EditionLanguageDTO;
 import com.netcracker.ageev.library.facade.EditionLanguageFacade;
-import com.netcracker.ageev.library.model.books.CoverCode;
 import com.netcracker.ageev.library.model.books.EditionLanguage;
 import com.netcracker.ageev.library.service.EditionLanguageService;
 import com.netcracker.ageev.library.validators.ResponseErrorValidator;

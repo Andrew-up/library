@@ -6,7 +6,7 @@ import lombok.Data;
 public class PriceRentDTO {
 
     private Integer id;
-    private Double priceName;
+    private String priceName;
 
 
 }

@@ -1,17 +1,10 @@
 package com.netcracker.ageev.library.model.books;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.awt.print.Book;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -44,9 +37,9 @@ public class Books implements Serializable {
     @Column(nullable = false)
     private Integer numberPages;
 
-    @ManyToOne(targetEntity = CoverCode.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = CoverBook.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "coverId")
-    private CoverCode coverId;
+    private CoverBook coverId;
 
     @ManyToOne(targetEntity = Series.class,fetch = FetchType.LAZY)
     private Series series;
@@ -141,17 +134,17 @@ public class Books implements Serializable {
         }
     }
 
-    public CoverCode getCoverId(){
-        CoverCode coverCode = new CoverCode();
+    public CoverBook getCoverId(){
+        CoverBook coverBook = new CoverBook();
         try {
             if(coverId.getName()!=null){
-                coverCode.setName(coverId.getName());
+                coverBook.setName(coverId.getName());
             }
             return coverId;
         }
         catch (NullPointerException e){
-            coverCode.setName("Not found coverCode");
-            return coverCode;
+            coverBook.setName("Not found coverCode");
+            return coverBook;
         }
     }
 

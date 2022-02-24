@@ -27,7 +27,7 @@ public class BooksService {
     private final SeriesService bookSeriesService;
     private final TranslationService translationService;
     private final PublisherService publisherService;
-    private final CoverCodeService coverCodeService;
+    private final CoverBookService coverBookService;
     private final AgeLimitService ageLimitService;
     private final EditionLanguageService editionLanguageService;
 
@@ -39,7 +39,7 @@ public class BooksService {
                         SeriesService bookSeriesService,
                         TranslationService translationService,
                         PublisherService publisherService,
-                        CoverCodeService coverCodeService,
+                        CoverBookService coverBookService,
                         AgeLimitService ageLimitService,
                         EditionLanguageService editionLanguageService) {
         this.booksRepository = booksRepository;
@@ -49,7 +49,7 @@ public class BooksService {
         this.bookSeriesService = bookSeriesService;
         this.translationService = translationService;
         this.publisherService = publisherService;
-        this.coverCodeService = coverCodeService;
+        this.coverBookService = coverBookService;
         this.ageLimitService = ageLimitService;
         this.editionLanguageService = editionLanguageService;
     }
@@ -72,7 +72,7 @@ public class BooksService {
         books.setReleaseDate(booksDTO.getBookReleaseDate()); // Дата выхода книги
         books.setPublisherId(publisherService.getPublisherById(booksDTO.getPublisherId())); // Издательство
         books.setNumberPages(booksDTO.getNumberPages()); // кол-во страниц
-        books.setCoverId(coverCodeService.getCoverCodeById(booksDTO.getCoverId())); // Тип обложки
+        books.setCoverId(coverBookService.getCoverBookById(booksDTO.getCoverId())); // Тип обложки
         books.setSeries(bookSeriesService.getSeriesById(booksDTO.getBookSeries())); // Серия
         books.setISBN(booksDTO.getNameISBN());   //ISBN
         books.setAgeLimitCode(ageLimitService.getAgeLimitById(booksDTO.getAgeLimitCode()));  // Возрастное ограничение

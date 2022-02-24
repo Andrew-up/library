@@ -1,12 +1,10 @@
 package com.netcracker.ageev.library.service.token;
 
-import com.netcracker.ageev.library.exception.ErrorMessage;
 import com.netcracker.ageev.library.exception.TokenRefreshException;
 import com.netcracker.ageev.library.model.RefreshToken;
 import com.netcracker.ageev.library.repository.RefreshTokenRepository;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
