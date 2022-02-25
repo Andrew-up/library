@@ -23,10 +23,11 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(Long id){
+        Employee employee = new Employee();
         try {
             return employeeRepository.findEmployeeByUsersId(id).orElseThrow(() -> new NullPointerException("not found"));
         } catch (NullPointerException e) {
-            return null;
+            return employee;
         }
     }
 }

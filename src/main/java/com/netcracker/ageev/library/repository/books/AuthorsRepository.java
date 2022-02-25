@@ -13,5 +13,7 @@ public interface AuthorsRepository extends JpaRepository<Authors,Long> {
 
     List<Authors> findAllByOrderById();
     Optional<Authors> findAuthorsById(Integer id);
+    Optional<Authors> findAuthorsBySeriesId(Integer id);
+
 
 }

@@ -13,12 +13,18 @@ public class RentFacade {
         rentDTO.setDateIssue(bookRent.getDateIssue());
         rentDTO.setDateReturn(bookRent.getDateReturn());
         rentDTO.setBookId(bookRent.getBooksId().getId());
-        rentDTO.setEmployeeId(bookRent.getEmployeeId().getId());
+        try {
+            rentDTO.setEmployeeId(bookRent.getEmployeeId().getId());
+            rentDTO.setEmployeeName(bookRent.getEmployeeId().getUsers().getEmail());
+        }
+        catch (NullPointerException e){
+            rentDTO.setEmployeeId(Long.parseLong("0"));
+            rentDTO.setEmployeeName("Работник не найден");
+        }
         rentDTO.setPriceId(bookRent.getPriceId().getId());
         rentDTO.setUserId(bookRent.getUsersId().getId());
 
         //name
-        rentDTO.setEmployeeName(bookRent.getEmployeeId().getUsers().getEmail());
         rentDTO.setBookName(bookRent.getBooksId().getBookTitle());
         rentDTO.setPriceName(bookRent.getPriceId().getPriceRent().toString());
         rentDTO.setUserName(bookRent.getUsersId().getEmail());

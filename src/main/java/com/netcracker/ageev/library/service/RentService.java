@@ -42,44 +42,53 @@ public class RentService {
         this.usersService = usersService;
     }
 
-    public List<BookRent> getAllRent(){
+    public List<BookRent> getAllRent() {
         return bookRentRepository.findAllByOrderByIdAsc();
     }
 
-    public BookRent createRent(RentDTO rentDTO, Principal principal){
+    public BookRent createRent(RentDTO rentDTO, Principal principal) {
         BookRent bookRent = new BookRent();
+        Employee employee = new Employee();
         ArrayList<String> arrayListError = isRentCorrect(rentDTO);
 
         bookRent.setBooksId(booksService.getBookById(rentDTO.getBookId()));
         bookRent.setDateIssue(rentDTO.getDateIssue());
-        bookRent.setEmployeeId(employeeService.getEmployeeById(rentDTO.getEmployeeId()));
         bookRent.setDateReturn(rentDTO.getDateReturn());
+        employee = employeeService.getEmployeeById(rentDTO.getEmployeeId());
+        if (employee.getId()!=null){
+            bookRent.setEmployeeId(employee);
+        }
+        else {
+            arrayListError.add("Пользователь: "+usersService.getUserById(rentDTO.getUserId()).getEmail().toString() +" не записан как работник");
+        }
         bookRent.setPriceId(priceService.getPriceById(rentDTO.getPriceId()));
-        if(rentDTO.getUserId()!=null){
+        if (rentDTO.getUserId() != null) {
             bookRent.setUsersId(usersService.getUserById(rentDTO.getUserId()));
         }
-        if(!ObjectUtils.isEmpty(arrayListError)){
+
+        if (!ObjectUtils.isEmpty(arrayListError)) {
             bookRent.setDateIssue(arrayListError.toString());
             return bookRent;
         }
+
         return bookRentRepository.save(bookRent);
     }
 
-    private ArrayList<String> isRentCorrect(RentDTO rentDTO){
+    private ArrayList<String> isRentCorrect(RentDTO rentDTO) {
         ArrayList<String> listError = new ArrayList<>();
-        if(rentDTO.getBookId()==null){
+        if (rentDTO.getBookId() == null) {
             listError.add("id книги не корректно");
         }
-        if(rentDTO.getEmployeeId()==null){
+        if (rentDTO.getEmployeeId() == null) {
             listError.add("Id работника не корректно");
         }
-        if(rentDTO.getUserId()==null){
+        if (rentDTO.getUserId() == null) {
             listError.add("Id арендатора не корректно");
         }
-        if(rentDTO.getDateIssue()==null){
+        if (rentDTO.getDateIssue() == null) {
             listError.add("Дата выдачи  не корректно");
         }
-        if(rentDTO.getPriceId()==null){
+        if (rentDTO.getPriceId() == null) {
             listError.add("Id оплаты не корректно");
         }
 

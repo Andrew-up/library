@@ -13,4 +13,5 @@ public interface SeriesRepository extends JpaRepository<Series,Long> {
 
     Optional<Series> findSeriesBySeriesId(Integer id);
     List<Series> findAllByOrderBySeriesId();
+    Optional<List<Series>> findAllByAuthorsId(Integer id);
 }

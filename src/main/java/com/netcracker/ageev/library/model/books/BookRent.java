@@ -20,6 +20,7 @@ public class BookRent  {
     @JoinColumn(name = "booksId")
     private Books booksId;
 
+
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Employee.class)
     @JoinColumn(name = "employeeId")
     private Employee employeeId;
@@ -50,6 +51,7 @@ public class BookRent  {
             return books;
         }
     }
+
 
     public Users getUsersId() {
         Users users = new Users();

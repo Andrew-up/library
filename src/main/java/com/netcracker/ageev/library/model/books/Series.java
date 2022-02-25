@@ -14,4 +14,9 @@ public class Series {
 
     @Column(nullable = false)
     private String seriesName;
+
+    @ManyToOne
+    @JoinColumn(name = "authors_id")
+    private Authors authors;
+
 }

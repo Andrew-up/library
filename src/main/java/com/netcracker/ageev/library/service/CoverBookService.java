@@ -47,7 +47,9 @@ public class CoverBookService {
             return coverBook;
         }
         if (usersService.DataAccessToUser(users)) {
-            return saveCoverBook(coverBookDTO, coverBook);
+            coverBook.setName(coverBookDTO.getCoverBookName());
+            coverBookRepository.save(coverBook);
+            return coverBook;
         }
         else {
             coverBook.setName("Для пользователя с ролью " + users.getERole() + " создание невозможно");
@@ -64,7 +66,9 @@ public class CoverBookService {
             return coverBook;
         }
         if (usersService.DataAccessToUser(users)) {
-            return saveCoverBook(coverBookDTO, coverBook);
+            coverBook.setName(coverBookDTO.getCoverBookName());
+            coverBookRepository.save(coverBook);
+            return coverBook;
         }
         else {
             coverBook.setName("Для пользователя с ролью " + users.getERole() + " обновление невозможно");
@@ -102,18 +106,6 @@ public class CoverBookService {
         }
     }
 
-    private CoverBook saveCoverBook(CoverBookDTO coverBookDTO, CoverBook coverBook) {
-        try {
-            coverBook.setName(coverBookDTO.getCoverBookName());
-            coverBookRepository.save(coverBook);
-            return coverBook;
-        } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
-            coverBook.setId(-2000);
-            coverBook.setName("Ошибка при добавлении в бд, такая запись уже есть");
-            return coverBook;
-        }
-    }
 
 
 }
