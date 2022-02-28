@@ -41,7 +41,7 @@ public class Books implements Serializable {
     @JoinColumn(name = "coverId")
     private CoverBook coverId;
 
-    @ManyToOne(targetEntity = Series.class,fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Series.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Series series;
 
     @Column(nullable = true)

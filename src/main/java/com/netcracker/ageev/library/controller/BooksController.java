@@ -44,7 +44,6 @@ public class BooksController {
                 .stream()
                 .map(booksFacade::booksDTO)
                 .collect(Collectors.toList());
-
         return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
     }
 

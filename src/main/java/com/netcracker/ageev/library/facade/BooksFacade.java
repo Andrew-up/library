@@ -1,7 +1,9 @@
 package com.netcracker.ageev.library.facade;
 
 import com.netcracker.ageev.library.dto.BooksDTO;
+import com.netcracker.ageev.library.model.books.Authors;
 import com.netcracker.ageev.library.model.books.Books;
+import com.netcracker.ageev.library.model.books.Series;
 import org.springframework.stereotype.Component;
 
 @Component

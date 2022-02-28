@@ -2,6 +2,7 @@ package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.BooksDTO;
 import com.netcracker.ageev.library.model.books.Books;
+import com.netcracker.ageev.library.model.books.Series;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BooksRepository;
 import com.netcracker.ageev.library.repository.users.UsersRepository;

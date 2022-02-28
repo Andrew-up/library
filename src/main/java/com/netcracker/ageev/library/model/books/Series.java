@@ -19,4 +19,7 @@ public class Series {
     @JoinColumn(name = "authors_id")
     private Authors authors;
 
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = Books.class)
+    private Books books;
+
 }

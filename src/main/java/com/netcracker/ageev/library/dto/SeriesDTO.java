@@ -9,7 +9,6 @@ public class SeriesDTO {
     private Integer seriesId;
     private String seriesName;
     private Authors authors;
-
     private Integer authorsId;
 
 }

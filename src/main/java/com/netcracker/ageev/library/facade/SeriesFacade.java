@@ -15,13 +15,18 @@ public class SeriesFacade {
         Authors authors = new Authors();
         seriesDTO.setSeriesId(series.getSeriesId());
         seriesDTO.setSeriesName(series.getSeriesName());
-        authors.setId(series.getAuthors().getId());
-        authors.setFirstname(series.getAuthors().getFirstname());
-        authors.setLastname(series.getAuthors().getLastname());
-        authors.setPatronymic(series.getAuthors().getPatronymic());
-        authors.setDateOfBirth(series.getAuthors().getDateOfBirth());
-        seriesDTO.setAuthors(authors);
+        seriesDTO.setAuthors(series.getAuthors());
+        System.out.println("seriesAuth: "+series.getAuthors());
+        if (series.getAuthors()!=null){
+            authors.setId(series.getAuthors().getId());
+            authors.setFirstname(series.getAuthors().getFirstname());
+            authors.setLastname(series.getAuthors().getLastname());
+            authors.setPatronymic(series.getAuthors().getPatronymic());
+            authors.setDateOfBirth(series.getAuthors().getDateOfBirth());
+            seriesDTO.setAuthors(authors);
+        }
         return seriesDTO;
+
     }
 
 
