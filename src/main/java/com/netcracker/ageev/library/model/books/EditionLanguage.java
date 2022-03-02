@@ -12,7 +12,7 @@ public class EditionLanguage    {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer languageId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String languageName;
 
 }

@@ -113,7 +113,7 @@ public class SeriesService {
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             series.setSeriesId(-2000);
-            series.setSeriesName("Ошибка при добавлении в бд, такая запись уже есть");
+            series.setSeriesName("Ошибка при добавлении в бд, не выцбран автор");
             return series;
         }
     }

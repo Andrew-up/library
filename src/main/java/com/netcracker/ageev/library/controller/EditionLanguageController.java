@@ -3,6 +3,7 @@ package com.netcracker.ageev.library.controller;
 import com.netcracker.ageev.library.dto.EditionLanguageDTO;
 import com.netcracker.ageev.library.facade.EditionLanguageFacade;
 import com.netcracker.ageev.library.model.books.EditionLanguage;
+import com.netcracker.ageev.library.payload.responce.MessageResponse;
 import com.netcracker.ageev.library.service.EditionLanguageService;
 import com.netcracker.ageev.library.validators.ResponseErrorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,21 @@ public class EditionLanguageController {
         EditionLanguage editionLanguage = editionLanguageService.createEditionLanguage(editionLanguageDTO,principal);
         EditionLanguageDTO editionLanguageDTO1 = editionLanguageFacade.editionLanguageDTO(editionLanguage);
         return new ResponseEntity<>(editionLanguageDTO1,HttpStatus.OK);
+    }
+
+
+    @PostMapping("/update")
+    public ResponseEntity<Object> updateEditionLanguage(@Valid @RequestBody EditionLanguageDTO editionLanguageDTO, BindingResult bindingResult, Principal principal){
+        ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
+        if (!ObjectUtils.isEmpty(listError)) return listError;
+        EditionLanguage editionLanguage = editionLanguageService.updateEditionLanguage(editionLanguageDTO,principal);
+        EditionLanguageDTO editionLanguageDTO1 = editionLanguageFacade.editionLanguageDTO(editionLanguage);
+        return new ResponseEntity<>(editionLanguageDTO1,HttpStatus.OK);
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<Object> deleteTranslation(@Valid @RequestBody String id, BindingResult bindingResult, Principal principal){
+        String resultDelete = editionLanguageService.deleteEditionLanguage(Integer.parseInt(id),principal);
+        return new ResponseEntity<>(new MessageResponse(resultDelete),HttpStatus.OK);
     }
 }

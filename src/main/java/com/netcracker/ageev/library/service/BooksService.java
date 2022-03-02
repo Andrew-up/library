@@ -2,7 +2,6 @@ package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.BooksDTO;
 import com.netcracker.ageev.library.model.books.Books;
-import com.netcracker.ageev.library.model.books.Series;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BooksRepository;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
@@ -77,7 +76,7 @@ public class BooksService {
         books.setSeries(bookSeriesService.getSeriesById(booksDTO.getBookSeries())); // Серия
         books.setISBN(booksDTO.getNameISBN());   //ISBN
         books.setAgeLimitCode(ageLimitService.getAgeLimitById(booksDTO.getAgeLimitCode()));  // Возрастное ограничение
-        books.setLanguageId(editionLanguageService.getLanguageById(booksDTO.getLanguageId()));// Язык издания
+        books.setLanguageId(editionLanguageService.getEditionLanguageById(booksDTO.getLanguageId()));// Язык издания
         books.setTranslation(translationService.getTranslationById(booksDTO.getTranslationId())); // Автор перевода
 
 

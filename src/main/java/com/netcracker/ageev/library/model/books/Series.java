@@ -16,7 +16,7 @@ public class Series {
     private String seriesName;
 
     @ManyToOne
-    @JoinColumn(name = "authors_id")
+    @JoinColumn(name = "authors_id",nullable = false)
     private Authors authors;
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = Books.class)
