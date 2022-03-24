@@ -1,15 +1,51 @@
 package com.netcracker.ageev.library.model.books;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.netcracker.ageev.library.model.users.BasketUser;
+import com.netcracker.ageev.library.model.users.Users;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collector;
 
 @Data
 @Entity
 public class Books implements Serializable {
 
+
+    public Books(Long id,
+                 String bookTitle,
+                 Integer numberPages,
+                 TranslationBooks translation,
+                 String fullName,
+                 BookGenres bookGenres,
+                 EditionLanguage editionLanguage,
+                 String ISBN,
+                 Authors authors,
+                 String releaseDate,
+                 Publisher publisher,
+                 Series series,
+                 CoverBook coverBook,
+                 AgeLimit ageLimit) {
+        this.id = id;
+        this.bookTitle = bookTitle;
+        this.numberPages = numberPages;
+        this.translation = translation;
+        this.fullName = fullName;
+        this.genreCode = bookGenres;
+        this.languageId = editionLanguage;
+        this.ISBN = ISBN;
+        this.authors = authors;
+        this.releaseDate = releaseDate;
+        this.publisherId = publisher;
+        this.series = series;
+        this.coverId = coverBook;
+        this.ageLimitCode = ageLimit;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +77,7 @@ public class Books implements Serializable {
     @JoinColumn(name = "coverId")
     private CoverBook coverId;
 
-    @ManyToOne(targetEntity = Series.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Series.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Series series;
 
     @Column(nullable = true)
@@ -62,7 +98,12 @@ public class Books implements Serializable {
     @Column(name = "ImageId")
     private String imageId;
 
-    //    @Column(nullable = true,name = "imageBookId")
+    //    private Integer countBooks;
+    @ManyToOne()
+    private Price price;
+
+    @OneToMany(targetEntity = BasketUser.class, mappedBy = "books", fetch = FetchType.LAZY)
+    private List<BasketUser> rentalRequestToUser;
 
     public Books() {
 
@@ -80,7 +121,8 @@ public class Books implements Serializable {
             return bookGenres;
         }
     }
-    public Authors getAuthors(){
+
+    public Authors getAuthors() {
         Authors authors = new Authors();
         try {
             if (authors.getFirstname() != null) {
@@ -93,7 +135,7 @@ public class Books implements Serializable {
         }
     }
 
-    public Series getSeries(){
+    public Series getSeries() {
         Series seriesObj = new Series();
         try {
             if (series.getSeriesName() != null) {
@@ -106,71 +148,66 @@ public class Books implements Serializable {
         }
     }
 
-    public TranslationBooks getTranslation(){
+    public TranslationBooks getTranslation() {
         TranslationBooks translationBooks = new TranslationBooks();
         try {
-            if(translation.getTranslationName()!=null){
+            if (translation.getTranslationName() != null) {
                 translationBooks.setTranslationName(translation.getTranslationName());
             }
             return translation;
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             translationBooks.setTranslationName("Not found translation");
             return translationBooks;
         }
     }
 
-    public Publisher getPublisherId(){
+    public Publisher getPublisherId() {
         Publisher publisher = new Publisher();
         try {
-            if(publisherId.getName()!=null){
+            if (publisherId.getName() != null) {
                 publisher.setName(translation.getTranslationName());
             }
             return publisherId;
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             publisher.setName("Not found publisher");
             return publisher;
         }
     }
 
-    public CoverBook getCoverId(){
+    public CoverBook getCoverId() {
         CoverBook coverBook = new CoverBook();
         try {
-            if(coverId.getName()!=null){
+            if (coverId.getName() != null) {
                 coverBook.setName(coverId.getName());
             }
             return coverId;
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             coverBook.setName("Not found coverCode");
             return coverBook;
         }
     }
 
-    public AgeLimit getAgeLimitCode(){
+    public AgeLimit getAgeLimitCode() {
         AgeLimit ageLimit = new AgeLimit();
         try {
-            if(ageLimitCode.getAge()!=null){
+            if (ageLimitCode.getAge() != null) {
                 ageLimit.setAge(ageLimitCode.getAge());
             }
             return ageLimitCode;
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             ageLimit.setAge("Not found ageLimit");
             return ageLimit;
         }
     }
 
-    public EditionLanguage getLanguageId(){
+    public EditionLanguage getLanguageId() {
         EditionLanguage editionLanguage = new EditionLanguage();
         try {
-            if(languageId.getLanguageName()!=null){
+            if (languageId.getLanguageName() != null) {
                 editionLanguage.setLanguageName(languageId.getLanguageName());
             }
             return languageId;
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             editionLanguage.setLanguageName("Not found edition language");
             return editionLanguage;
         }
@@ -178,7 +215,7 @@ public class Books implements Serializable {
 
 
     public String getFullName() {
-        return this.authors.getFirstname() +" " +this.authors.getLastname() +" " + this.authors.getPatronymic();
+        return this.authors.getFirstname() + " " + this.authors.getLastname() + " " + this.authors.getPatronymic();
     }
 
 }

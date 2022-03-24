@@ -11,7 +11,9 @@ public class SecutiryConstants {
     public static final String TOKEN_PREFIX ="Bearer ";
     public static final String HEADER_STRING ="Authorization";
     public static final String CONTENT_TYPE ="Application/json";
-    public static final long EXPIRATION_TIME = 900_000; //15 минут
+    public static final long EXPIRATION_TIME = 15000; //15 минут 900_000
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = 86400000; //1 день
     public static final String GUEST_BOOKS ="/api/books/all";
+    public static final String ALLBOOK_PAGE ="/api/books/AllBookByPage";
+    public static final String SEARCH ="/api/books/search";
 }

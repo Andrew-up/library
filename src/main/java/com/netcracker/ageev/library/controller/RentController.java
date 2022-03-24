@@ -24,16 +24,21 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/books/rent")
 @CrossOrigin
 public class RentController {
-    @Autowired
-   private RentFacade rentFacade;
-    @Autowired
+
+    private RentFacade rentFacade;
     private ResponseErrorValidator responseErrorValidator;
-    @Autowired
     private RentService rentService;
+
+    @Autowired
+    public RentController(RentFacade rentFacade, ResponseErrorValidator responseErrorValidator, RentService rentService) {
+        this.rentFacade = rentFacade;
+        this.responseErrorValidator = responseErrorValidator;
+        this.rentService = rentService;
+    }
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<RentDTO>> getAllRent(){
+    public ResponseEntity<List<RentDTO>> getAllRent() {
         List<RentDTO> rentDTOS = rentService.getAllRent()
                 .stream()
                 .map(rentFacade::rentDTO)
@@ -41,14 +46,23 @@ public class RentController {
         return new ResponseEntity<>(rentDTOS, HttpStatus.OK);
     }
 
+    @GetMapping("/myBooksRentAll")
+    public ResponseEntity<List<RentDTO>> getAllRent(Principal principal) {
+        List<RentDTO> rentDTOS = rentService.getAllRentByUserId(principal)
+                .stream()
+                .map(rentFacade::rentDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(rentDTOS, HttpStatus.OK);
+    }
 
-    @PostMapping("/create")
-    public ResponseEntity<Object> createRent(@Valid @RequestBody RentDTO rentDTO, BindingResult bindingResult, Principal principal){
+
+    @PostMapping("/create/{idBaskedToUser}")
+    public ResponseEntity<Object> createRent(@Valid @RequestBody RentDTO rentDTO, BindingResult bindingResult, Principal principal, @PathVariable String idBaskedToUser) {
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
-        BookRent bookRent = rentService.createRent(rentDTO,principal);
+        BookRent bookRent = rentService.createRent(rentDTO, principal, Long.parseLong(idBaskedToUser));
         RentDTO rentDTO1 = rentFacade.rentDTO(bookRent);
-        return new ResponseEntity<>(rentDTO1,HttpStatus.OK);
+        return new ResponseEntity<>(rentDTO1, HttpStatus.OK);
     }
 
 

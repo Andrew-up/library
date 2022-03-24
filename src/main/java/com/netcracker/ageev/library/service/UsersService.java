@@ -80,7 +80,7 @@ public class UsersService {
 
     public Users updateUser(UserDTO userDTO, Principal principal) {
         Users user = getUserByPrincipal(principal);
-        if(userDTO.getFirstname()!=null && userDTO.getFirstname().equals("")){
+        if(userDTO.getFirstname()!=null && !userDTO.getFirstname().equals("")){
             user.setFirstname(userDTO.getFirstname());
         }
         if(userDTO.getLastname()!=null){

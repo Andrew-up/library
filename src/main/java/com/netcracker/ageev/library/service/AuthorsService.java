@@ -39,7 +39,7 @@ public class AuthorsService {
 
     public Authors createAuthors(AuthorsDTO authorsDTO, Principal principal) {
         Authors authors = new Authors();
-        ArrayList<String>  arrayList =  isAuthorsCorrect(authorsDTO);
+        ArrayList<String> arrayList = isAuthorsCorrect(authorsDTO);
         if (!arrayList.isEmpty()) {
             authors.setFirstname(arrayList.toString());
             return authors;

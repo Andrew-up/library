@@ -1,6 +1,8 @@
 package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.BooksDTO;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
+import com.netcracker.ageev.library.exception.ErrorMessage;
 import com.netcracker.ageev.library.model.books.Books;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BooksRepository;
@@ -8,6 +10,9 @@ import com.netcracker.ageev.library.repository.users.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -15,6 +20,7 @@ import org.springframework.util.ObjectUtils;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class BooksService {
@@ -30,6 +36,8 @@ public class BooksService {
     private final CoverBookService coverBookService;
     private final AgeLimitService ageLimitService;
     private final EditionLanguageService editionLanguageService;
+    private final PriceService priceService;
+
 
     @Autowired
     public BooksService(BooksRepository booksRepository,
@@ -41,7 +49,8 @@ public class BooksService {
                         PublisherService publisherService,
                         CoverBookService coverBookService,
                         AgeLimitService ageLimitService,
-                        EditionLanguageService editionLanguageService) {
+                        EditionLanguageService editionLanguageService,
+                        PriceService priceService) {
         this.booksRepository = booksRepository;
         this.usersRepository = usersRepository;
         this.authorsService = authorsService;
@@ -52,12 +61,68 @@ public class BooksService {
         this.coverBookService = coverBookService;
         this.ageLimitService = ageLimitService;
         this.editionLanguageService = editionLanguageService;
+        this.priceService = priceService;
     }
 
 
     public List<Books> getAllBooks() {
         return booksRepository.findAllByOrderById();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BooksService that = (BooksService) o;
+        return Objects.equals(booksRepository, that.booksRepository) && Objects.equals(usersRepository, that.usersRepository) && Objects.equals(authorsService, that.authorsService) && Objects.equals(bookGenresService, that.bookGenresService) && Objects.equals(bookSeriesService, that.bookSeriesService) && Objects.equals(translationService, that.translationService) && Objects.equals(publisherService, that.publisherService) && Objects.equals(coverBookService, that.coverBookService) && Objects.equals(ageLimitService, that.ageLimitService) && Objects.equals(editionLanguageService, that.editionLanguageService) && Objects.equals(priceService, that.priceService);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(booksRepository, usersRepository, authorsService, bookGenresService, bookSeriesService, translationService, publisherService, coverBookService, ageLimitService, editionLanguageService, priceService);
+    }
+
+    public List<Books> getAllBooksByInputSearch(String inputSearch, String typeSearch) {
+        List<Books> booksListSearch;
+        System.out.println("Область поиска: "+typeSearch);
+        if (typeSearch.equals("booktitle")) {
+            booksListSearch = booksRepository.findAllByBookTitle(inputSearch);
+        }
+         else if (typeSearch.equals("authors")) {
+            booksListSearch = booksRepository.findAllByAuthors(inputSearch);
+        }
+        else if (typeSearch.equals("genres")) {
+            booksListSearch = booksRepository.findAllByGenres(inputSearch);
+        }
+        else if (typeSearch.equals("publisher")) {
+            booksListSearch = booksRepository.findAllByPublisher(inputSearch);
+        }
+        else if (typeSearch.equals("series")) {
+            booksListSearch = booksRepository.findAllBySeries(inputSearch);
+        }
+        else {
+            booksListSearch = new ArrayList<>();
+        }
+
+        return booksListSearch;
+    }
+
+    public Page<Books> getAllBooksByNumberPage(Pageable pageable) {
+        return booksRepository.findAllByOrderById(pageable);
+    }
+
+    public Books getBookUserById(Long id) {
+        Books books;
+        try {
+            books = booksRepository.findBooksById(id).orElseThrow(() -> new DataNotFoundException("not found"));
+            return books;
+        } catch (DataNotFoundException e) {
+            e.printStackTrace();
+            return new Books();
+        }
+
+    }
+
     public Books createBook(BooksDTO booksDTO, Principal principal) {
         Users users = getUserByPrincipal(principal);
         Books books = new Books();
@@ -78,8 +143,7 @@ public class BooksService {
         books.setAgeLimitCode(ageLimitService.getAgeLimitById(booksDTO.getAgeLimitCode()));  // Возрастное ограничение
         books.setLanguageId(editionLanguageService.getEditionLanguageById(booksDTO.getLanguageId()));// Язык издания
         books.setTranslation(translationService.getTranslationById(booksDTO.getTranslationId())); // Автор перевода
-
-
+        books.setPrice(priceService.getPriceById(booksDTO.getPriceId()));
         return booksRepository.save(books);
     }
 
@@ -89,7 +153,7 @@ public class BooksService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username" + username));
     }
 
-    public Books getBookById(Long id){
+    public Books getBookById(Long id) {
         try {
             return booksRepository.findBooksById(id).orElseThrow(() -> new NullPointerException("not found"));
         } catch (NullPointerException e) {
@@ -117,7 +181,7 @@ public class BooksService {
         if (booksDTO.getNumberPages() == null) {
             listError.add("кол-во страниц не корректно");
         }
-        if(booksDTO.getBookSeries()==null){
+        if (booksDTO.getBookSeries() == null) {
             listError.add("Серия не корректна");
         }
         if (booksDTO.getNameISBN().equals("null")) {
@@ -129,12 +193,11 @@ public class BooksService {
         if (booksDTO.getLanguageId() == null) {
             listError.add("Язык издания не корректен");
         }
-        if(booksDTO.getTranslationId()==null){
+        if (booksDTO.getTranslationId() == null) {
             listError.add("Автор перевода не корректен");
         }
         return listError;
     }
-
 
 
 }
