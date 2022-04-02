@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.model.books;
 
 import com.netcracker.ageev.library.model.BaseEntity;
+import com.netcracker.ageev.library.model.users.BasketUser;
 import com.netcracker.ageev.library.model.users.Employee;
 import com.netcracker.ageev.library.model.users.Users;
 import lombok.Data;
@@ -33,6 +34,9 @@ public class BookRent  {
 
     @Column(nullable = true)
     private String dateReturn;
+
+    @ManyToOne
+    private BasketUser basketUser;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Price.class)
     @JoinColumn(name = "priceId",nullable = true)

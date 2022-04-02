@@ -6,6 +6,7 @@ import com.netcracker.ageev.library.dto.RentDTO;
 import com.netcracker.ageev.library.facade.RentFacade;
 import com.netcracker.ageev.library.model.books.BookRent;
 import com.netcracker.ageev.library.model.books.Publisher;
+import com.netcracker.ageev.library.payload.responce.MessageResponse;
 import com.netcracker.ageev.library.service.RentService;
 import com.netcracker.ageev.library.validators.ResponseErrorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,12 @@ public class RentController {
         BookRent bookRent = rentService.createRent(rentDTO, principal, Long.parseLong(idBaskedToUser));
         RentDTO rentDTO1 = rentFacade.rentDTO(bookRent);
         return new ResponseEntity<>(rentDTO1, HttpStatus.OK);
+    }
+
+    @GetMapping("/delete/{idRent}")
+    public ResponseEntity<Object> deleteSeries(@PathVariable("idRent") String idRent) {
+        String resultDelete = rentService.deleteRent(idRent);
+        return new ResponseEntity<>(new MessageResponse(resultDelete), HttpStatus.OK);
     }
 
 

@@ -43,6 +43,15 @@ public class UsersController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(userDTOS,HttpStatus.OK);
     }
+    @GetMapping("/allRequestCreatedToUser")
+    public ResponseEntity<List<UserDTO>> getAllUsersRequestCreated(){
+        List<UserDTO> userDTOS = userService.getAllUsersRequestCreated()
+                .stream()
+                .map(userFacade::userToUserDTO2)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(userDTOS,HttpStatus.OK);
+    }
+
 
     @PostMapping("/update")
     public ResponseEntity<Object> updateUser(@Valid @RequestBody UserDTO userDTO,

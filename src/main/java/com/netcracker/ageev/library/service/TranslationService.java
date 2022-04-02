@@ -98,12 +98,13 @@ public class TranslationService {
 
     private ArrayList<String> isTranslationCorrect(TranslationDTO translationDTO) {
         ArrayList<String> listError = new ArrayList<>();
+        System.out.println(translationDTO.getTranslationName());
         String regex = "^(([a-zA-Zа-яА-Я]*\\s*){2,3})$";
 
         boolean result = translationDTO.getTranslationName().matches(regex);
         System.out.println("result:"+result);
 
-        if (!result) {
+        if (!result||translationDTO.getTranslationName().equals("")) {
             listError.add("Выражение не прошло проверку по формату записи");
         }
 

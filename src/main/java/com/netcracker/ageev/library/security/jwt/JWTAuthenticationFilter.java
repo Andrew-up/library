@@ -41,9 +41,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                         user,null, Collections.emptyList()
                 );
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
+                System.out.println("SSSSSSSSSSSS");
+                System.out.println(authentication);
             }
         } catch (Exception e) {
             LOG.error("Can not set user authentication");

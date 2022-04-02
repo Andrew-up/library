@@ -1,16 +1,10 @@
 package com.netcracker.ageev.library.model.books;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.netcracker.ageev.library.model.users.BasketUser;
-import com.netcracker.ageev.library.model.users.Users;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collector;
 
 @Data
 @Entity
@@ -30,7 +24,9 @@ public class Books implements Serializable {
                  Publisher publisher,
                  Series series,
                  CoverBook coverBook,
-                 AgeLimit ageLimit) {
+                 AgeLimit ageLimit,
+                 Price price,
+                 Integer countBooks) {
         this.id = id;
         this.bookTitle = bookTitle;
         this.numberPages = numberPages;
@@ -45,6 +41,8 @@ public class Books implements Serializable {
         this.series = series;
         this.coverId = coverBook;
         this.ageLimitCode = ageLimit;
+        this.price = price;
+        this.countBooks = countBooks;
     }
 
     @Id
@@ -102,8 +100,7 @@ public class Books implements Serializable {
     @ManyToOne()
     private Price price;
 
-    @OneToMany(targetEntity = BasketUser.class, mappedBy = "books", fetch = FetchType.LAZY)
-    private List<BasketUser> rentalRequestToUser;
+    private Integer countBooks;
 
     public Books() {
 

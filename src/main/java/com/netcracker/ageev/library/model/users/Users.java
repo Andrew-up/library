@@ -10,10 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
@@ -44,6 +41,9 @@ public class Users implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private ERole eRole;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "usersId")
+    private BasketUser basketUser;
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;

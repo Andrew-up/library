@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
@@ -72,7 +73,6 @@ public class AuthColtroller {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),decodedString));
-
         Users usersDetails =(Users) authentication.getPrincipal();
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(usersDetails.getId());
         SecurityContextHolder.getContext().setAuthentication(authentication);

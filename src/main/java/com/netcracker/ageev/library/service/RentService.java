@@ -2,10 +2,12 @@ package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.RentDTO;
 import com.netcracker.ageev.library.model.books.BookRent;
+import com.netcracker.ageev.library.model.books.Books;
 import com.netcracker.ageev.library.model.users.BasketUser;
 import com.netcracker.ageev.library.model.users.Employee;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BookRentRepository;
+import com.netcracker.ageev.library.repository.books.BooksRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class RentService {
     private final PriceService priceService;
     private final UsersService usersService;
     private final BasketUsersService basketUsersService;
+    private final BooksRepository booksRepository;
+
 
     @Autowired
     public RentService(BookRentRepository bookRentRepository,
@@ -36,7 +40,9 @@ public class RentService {
                        EmployeeService employeeService,
                        PriceService priceService,
                        UsersService usersService,
-                       BasketUsersService basketUsersService) {
+                       BasketUsersService basketUsersService,
+                       BooksRepository booksRepository) {
+
 
         this.bookRentRepository = bookRentRepository;
         this.booksService = booksService;
@@ -44,6 +50,7 @@ public class RentService {
         this.priceService = priceService;
         this.usersService = usersService;
         this.basketUsersService = basketUsersService;
+        this.booksRepository = booksRepository;
     }
 
     public List<BookRent> getAllRent() {
@@ -52,19 +59,32 @@ public class RentService {
 
     public List<BookRent> getAllRentByUserId(Principal principal) {
         Users user = usersService.getUserByPrincipal(principal);
-        List<BookRent> bookRent  = bookRentRepository.findBookRentByUsersId(user);
+        List<BookRent> bookRent = bookRentRepository.findBookRentByUsersId(user);
         return bookRent;
+    }
+
+    public String deleteRent(String idRent) {
+        BookRent bookRent = bookRentRepository.findBookRentById(Integer.parseInt(idRent)).orElseThrow(() -> new NullPointerException("not found"));
+        Books books = booksService.getBookById(bookRent.getBooksId().getId());
+        books.setCountBooks(books.getCountBooks()+1);
+        booksRepository.save(books);
+        bookRentRepository.delete(bookRent);
+        basketUsersService.deleteBasketById(bookRent.getBasketUser().getBasketUserId());
+        return "Удалено";
     }
 
     public BookRent createRent(RentDTO rentDTO, Principal principal, Long baskedId) {
         BookRent bookRent = new BookRent();
         Employee employee = new Employee();
-        BasketUser basketUser = basketUsersService.issueTookToUser(baskedId);
+        BasketUser basketUser = basketUsersService.issueBookToUser(baskedId);
         ArrayList<String> arrayListError = isRentCorrect(rentDTO);
         bookRent.setBooksId(booksService.getBookById(rentDTO.getBookId()));
         bookRent.setDateIssue(rentDTO.getDateIssue());
         bookRent.setDateReturn(rentDTO.getDateReturn());
+        bookRent.setBasketUser(basketUser);
         employee = employeeService.getEmployeeById(rentDTO.getEmployeeId());
+        Books books = booksService.getBookById(rentDTO.getBookId());
+        books.setCountBooks(books.getCountBooks() - 1);
         if (employee.getId() != null) {
             bookRent.setEmployeeId(employee);
         } else {
@@ -79,7 +99,7 @@ public class RentService {
             bookRent.setDateIssue(arrayListError.toString());
             return bookRent;
         }
-
+        booksRepository.save(books);
         return bookRentRepository.save(bookRent);
     }
 

@@ -55,12 +55,12 @@ public class AgeLimitService {
             ageLimit.setAge(arrayListError.toString());
             return ageLimit;
         }
-        if (usersService.DataAccessToUser(users)) {
+//        if (usersService.DataAccessToUser(users)) {
             return saveAgeLimit(ageLimitDTO, ageLimit);
-        } else {
-            ageLimit.setAge("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
-            return ageLimit;
-        }
+//        } else {
+//            ageLimit.setAge("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
+//            return ageLimit;
+//        }
     }
 
 

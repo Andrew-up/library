@@ -2,7 +2,6 @@ package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.BooksDTO;
 import com.netcracker.ageev.library.exception.DataNotFoundException;
-import com.netcracker.ageev.library.exception.ErrorMessage;
 import com.netcracker.ageev.library.model.books.Books;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BooksRepository;
@@ -11,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -144,6 +143,7 @@ public class BooksService {
         books.setLanguageId(editionLanguageService.getEditionLanguageById(booksDTO.getLanguageId()));// Язык издания
         books.setTranslation(translationService.getTranslationById(booksDTO.getTranslationId())); // Автор перевода
         books.setPrice(priceService.getPriceById(booksDTO.getPriceId()));
+        books.setCountBooks(booksDTO.getCountBooks());
         return booksRepository.save(books);
     }
 
@@ -162,39 +162,43 @@ public class BooksService {
     }
 
     private ArrayList<String> isBookCorrect(BooksDTO booksDTO) {
+
         ArrayList<String> listError = new ArrayList<>();
         if (booksDTO.getBookTitle().equals("null")) {
             listError.add("Имя книги не корректно");
         }
-        if (booksDTO.getAuthors() == null) {
+        if (booksDTO.getAuthors() == 0) {
             listError.add("Автор не корректен");
         }
-        if (booksDTO.getGenreCode() == null) {
+        if (booksDTO.getGenreCode() == 0) {
             listError.add("Жанр не корректен");
         }
         if (booksDTO.getBookReleaseDate().equals("null")) {
             listError.add("Дата релиза не корректна");
         }
-        if (booksDTO.getPublisherId() == null) {
+        if (booksDTO.getPublisherId() == 0) {
             listError.add("Издательство не корректен");
         }
         if (booksDTO.getNumberPages() == null) {
             listError.add("кол-во страниц не корректно");
         }
-        if (booksDTO.getBookSeries() == null) {
+        if (booksDTO.getBookSeries() == 0) {
             listError.add("Серия не корректна");
         }
         if (booksDTO.getNameISBN().equals("null")) {
             listError.add("ISBN не корректен");
         }
-        if (booksDTO.getAgeLimitCode() == null) {
+        if (booksDTO.getAgeLimitCode() == 0) {
             listError.add("Возрастное ограничение не корректено");
         }
-        if (booksDTO.getLanguageId() == null) {
+        if (booksDTO.getLanguageId() == 0) {
             listError.add("Язык издания не корректен");
         }
-        if (booksDTO.getTranslationId() == null) {
+        if (booksDTO.getTranslationId() == 0) {
             listError.add("Автор перевода не корректен");
+        }
+        if (booksDTO.getPriceId() == 0) {
+            listError.add("Стоимость аренды не корректна");
         }
         return listError;
     }

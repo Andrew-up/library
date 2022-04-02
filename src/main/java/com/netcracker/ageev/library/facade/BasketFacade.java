@@ -10,11 +10,13 @@ public class BasketFacade {
     public BasketUsersDTO basketUsersDTO(BasketUser basketUser){
         BasketUsersDTO basketUsersDTO = new BasketUsersDTO();
         basketUsersDTO.setBasketId(basketUser.getBasketUserId());
-        basketUsersDTO.setUsersName(basketUser.getUsers().getFirstname()+" "+basketUser.getUsers().getLastname());
+//        basketUsersDTO.setUsersName(basketUser.getUsersId()+" "+basketUser.getUsers().getLastname());
         basketUsersDTO.setBookTitle(basketUser.getBooks().getBookTitle());
         basketUsersDTO.setBookId(basketUser.getBooks().getId());
+
         try {
             basketUsersDTO.setPriceId(basketUser.getBooks().getPrice().getId().toString());
+//            basketUsersDTO.setUserId(basketUser.getUsers().getId().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

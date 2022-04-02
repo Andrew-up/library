@@ -26,8 +26,7 @@ public class BasketUser {
     private Price price;
 
     @OneToOne(fetch = FetchType.LAZY, targetEntity = Users.class)
-    @JoinColumn(name = "users_id")
-    private Users users;
+    private Long usersId;
 
     private Boolean isTheBasket;
 

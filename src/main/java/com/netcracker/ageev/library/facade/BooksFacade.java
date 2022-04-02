@@ -29,7 +29,8 @@ public class BooksFacade {
         booksDTO.setAgeLimitName(books.getAgeLimitCode().getAge());
         booksDTO.setLanguageId(books.getLanguageId().getLanguageId());
         booksDTO.setLanguageName(books.getLanguageId().getLanguageName());
-
+        booksDTO.setPriceName(books.getPrice().getPriceRent().toString());
+        booksDTO.setCountBooks(books.getCountBooks());
 //        booksDTO.setRentalRequestToUserList(books.getRentalRequestToUser().stream().map(BasketUser::getUsers).map(Users::getId).collect(Collectors.toList()));
 //        System.out.println("array22: "+books.getRentalRequestToUser().stream().map(BasketUser::getUsers).collect(Collectors.toList()));
 //        System.out.println(books.getSeries().getSeriesName());
@@ -55,6 +56,8 @@ public class BooksFacade {
         booksDTO.setLanguageId(books.getLanguageId().getLanguageId());
         booksDTO.setLanguageName(books.getLanguageId().getLanguageName());
         booksDTO.setTranslationName(books.getTranslation().getTranslationName());
+        booksDTO.setPriceName(books.getPrice().getPriceRent().toString());
+        booksDTO.setCountBooks(books.getCountBooks());
         return booksDTO;
     }
 

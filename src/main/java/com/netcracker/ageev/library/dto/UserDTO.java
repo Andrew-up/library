@@ -2,8 +2,6 @@ package com.netcracker.ageev.library.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
-
 @Data
 public class UserDTO {
 
@@ -17,5 +15,6 @@ public class UserDTO {
     private String Phone;
     private String address;
     private String dateOfBirth;
+    private Boolean isRequestCreated;
 
 }

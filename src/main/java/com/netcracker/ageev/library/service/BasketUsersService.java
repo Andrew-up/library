@@ -70,7 +70,7 @@ public class BasketUsersService {
         Users users = usersService.getUserByPrincipal(principal);
         Books books = booksRepository.findBooksById(booksDTO.getBookId()).orElseThrow(() -> new UsernameNotFoundException("Books not found"));
         BasketUser basketUser = new BasketUser();
-        basketUser.setUsers(users);
+        basketUser.setUsersId(users.getId());
         basketUser.setBooks(books);
         basketUser.setIsTheBasket(true);
         basketUser.setIsRequestCreated(false);
@@ -99,7 +99,8 @@ public class BasketUsersService {
         return "delete";
     }
 
-    public BasketUser issueTookToUser(Long id) {
+
+    public BasketUser issueBookToUser(Long id) {
         BasketUser basketUser = basketUsersRepository.findBasketUserByBasketUserId(id).orElseThrow(() -> new UsernameNotFoundException("BasketUser not found"));
         basketUser.setIsTheBasket(false);
         basketUser.setIsRequestCreated(false);
@@ -107,6 +108,9 @@ public class BasketUsersService {
         basketUsersRepository.save(basketUser);
         return basketUser;
     }
-
-
+    public String deleteBasketById(Long id) {
+        BasketUser basketUser =  basketUsersRepository.findBasketUserByBasketUserId(id).orElseThrow(() -> new UsernameNotFoundException("BasketUser not found"));
+        basketUsersRepository.delete(basketUser);
+        return "Удалено";
+    }
 }

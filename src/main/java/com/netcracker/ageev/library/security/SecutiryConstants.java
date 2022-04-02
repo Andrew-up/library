@@ -16,4 +16,5 @@ public class SecutiryConstants {
     public static final String GUEST_BOOKS ="/api/books/all";
     public static final String ALLBOOK_PAGE ="/api/books/AllBookByPage";
     public static final String SEARCH ="/api/books/search";
+    public static final String TEST_ROLE ="/api/books/age-limit/**";
 }

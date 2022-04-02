@@ -13,4 +13,5 @@ public class BasketUsersDTO {
     private Long bookId;
     private String priceId;
     private String priceName;
+    private String userId;
 }

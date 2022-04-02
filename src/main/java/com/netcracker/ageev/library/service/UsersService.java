@@ -63,6 +63,9 @@ public class UsersService {
     public List<Users> getAllUsers(){
         return userRepository.findAllByOrderById();
     }
+    public List<Users> getAllUsersRequestCreated(){
+        return userRepository.findAllByBasketUserNotNull();
+    }
 
     public Users getUserById(Long userId) {
         return userRepository.findUsersById(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));

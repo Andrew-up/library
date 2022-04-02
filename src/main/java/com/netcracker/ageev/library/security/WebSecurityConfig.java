@@ -19,7 +19,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true,
@@ -47,9 +47,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(SecutiryConstants.GUEST_BOOKS).permitAll()
                 .antMatchers(SecutiryConstants.ALLBOOK_PAGE).permitAll()
                 .antMatchers(SecutiryConstants.SEARCH).permitAll()
+                .antMatchers(SecutiryConstants.TEST_ROLE).hasRole("ADMIN")
+
 //                .antMatchers(SecutiryConstants.AUTHORS_API).permitAll()
 //                .antMatchers(SecutiryConstants.BOOK_GENRES_API).permitAll()
                 .anyRequest().authenticated();
+
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

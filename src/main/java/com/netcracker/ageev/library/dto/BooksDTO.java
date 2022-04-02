@@ -1,10 +1,7 @@
 package com.netcracker.ageev.library.dto;
 
-import com.netcracker.ageev.library.model.users.Users;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -24,6 +21,7 @@ public class BooksDTO {
     private Integer ageLimitCode;
     private Integer coverId;
     private Integer priceId;
+    private Integer countBooks;
 
     //name
     private String genreName;
@@ -34,6 +32,8 @@ public class BooksDTO {
     private String coverName;
     private String ageLimitName;
     private String languageName;
+    private String priceName;
+
 
     //Image
 

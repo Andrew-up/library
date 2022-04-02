@@ -51,6 +51,8 @@ public class BooksController {
                 .stream()
                 .map(booksFacade::booksDTO)
                 .collect(Collectors.toList());
+        System.out.println("размер: "+booksDTOS.size());
+        System.out.println(booksDTOS);
         return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
     }
 
@@ -91,7 +93,13 @@ public class BooksController {
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
         Books books = booksService.createBook(booksDTO, principal);
-        BooksDTO booksDTO1 = booksFacade.booksDTO(books);
+        BooksDTO booksDTO1 = new BooksDTO();
+        if(books.getId()!=null){
+            booksDTO1 = booksFacade.booksDTO(books);
+        }
+        else {
+            booksDTO1.setBookTitle(books.getBookTitle());
+        }
         return new ResponseEntity<>(booksDTO1, HttpStatus.OK);
     }
 
