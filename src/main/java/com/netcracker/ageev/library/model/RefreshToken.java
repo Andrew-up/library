@@ -3,6 +3,7 @@ package com.netcracker.ageev.library.model;
 import com.netcracker.ageev.library.model.users.Users;
 import lombok.Data;
 import lombok.Getter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.Instant;

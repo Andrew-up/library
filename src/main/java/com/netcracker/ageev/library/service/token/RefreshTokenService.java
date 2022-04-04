@@ -32,26 +32,23 @@ public class RefreshTokenService {
     }
 
     public RefreshToken createRefreshToken(Long userId) {
-        RefreshToken refreshToken = new RefreshToken();
-
-        RefreshToken refreshToken1 = null;
+        RefreshToken refreshToken = null;
         try {
-            refreshToken1  = refreshTokenRepository.findByUserId(userId).orElseThrow(() -> new NullPointerException("Юзер не найден"));
+            refreshToken  = refreshTokenRepository.findByUserId(userId).orElseThrow(() -> new NullPointerException("Юзер не найден"));
+            refreshToken.setUser(usersRepository.findById(userId).get());
+            refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
+            refreshToken.setToken(UUID.randomUUID().toString());
+            return refreshTokenRepository.save(refreshToken);
         }
         catch (NullPointerException e){
             e.printStackTrace();
         }
-        if(refreshToken1!=null){
-            refreshToken1.setUser(usersRepository.findById(userId).get());
-            refreshToken1.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
-            refreshToken1.setToken(UUID.randomUUID().toString());
-            return refreshTokenRepository.save(refreshToken1);
-        }
-        else {
             refreshToken.setUser(usersRepository.findById(userId).get());
             refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
             refreshToken.setToken(UUID.randomUUID().toString());
-        }
+
+        System.out.println("ZXXXZXZHGFHG");
+        System.out.println(refreshToken);
         return refreshTokenRepository.save(refreshToken);
     }
 

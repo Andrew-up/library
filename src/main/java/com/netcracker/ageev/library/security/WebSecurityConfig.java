@@ -47,13 +47,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(SecutiryConstants.GUEST_BOOKS).permitAll()
                 .antMatchers(SecutiryConstants.ALLBOOK_PAGE).permitAll()
                 .antMatchers(SecutiryConstants.SEARCH).permitAll()
-                .antMatchers(SecutiryConstants.TEST_ROLE).hasRole("ADMIN")
+                .antMatchers(SecutiryConstants.TEST_ROLE).hasRole("USER")
+
 
 //                .antMatchers(SecutiryConstants.AUTHORS_API).permitAll()
 //                .antMatchers(SecutiryConstants.BOOK_GENRES_API).permitAll()
                 .anyRequest().authenticated();
 
-
+        http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
@@ -64,12 +65,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-
     @Override
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -77,8 +78,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter(){
-        return  new JWTAuthenticationFilter();
+    public JWTAuthenticationFilter jwtAuthenticationFilter() {
+        return new JWTAuthenticationFilter();
     }
 
 

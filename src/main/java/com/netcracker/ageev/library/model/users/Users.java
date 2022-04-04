@@ -7,6 +7,7 @@ import com.netcracker.ageev.library.model.enums.Status;
 import lombok.Data;
 import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -94,4 +95,13 @@ public class Users implements UserDetails {
     public Users() {
 
     }
+
+
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+//        list.add(new SimpleGrantedAuthority(eRole.name()));
+//        return list;
+//    }
+
 }

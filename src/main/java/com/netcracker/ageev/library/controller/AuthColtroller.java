@@ -1,6 +1,8 @@
 package com.netcracker.ageev.library.controller;
 
+import com.netcracker.ageev.library.dto.RefreshTokenDTO;
 import com.netcracker.ageev.library.exception.TokenRefreshException;
+import com.netcracker.ageev.library.facade.RefreshTokenFacade;
 import com.netcracker.ageev.library.model.RefreshToken;
 import com.netcracker.ageev.library.model.enums.Status;
 import com.netcracker.ageev.library.model.users.Users;
@@ -49,6 +51,9 @@ public class AuthColtroller {
     @Autowired
     private JWTProvider jwtProvider;
 
+    @Autowired
+    private RefreshTokenFacade refreshTokenFacade;
+
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
         ResponseEntity<Object> listErrors = responseErrorValidator.mappedValidatorService(bindingResult);
@@ -65,7 +70,7 @@ public class AuthColtroller {
             return listErrors;
         }
         if(block(loginRequest.getEmail())){
-            return ResponseEntity.ok(new SuccessResponse(false,"Учетная запись заблокирована","",""));
+            return ResponseEntity.ok(new SuccessResponse(false,"Учетная запись заблокирована",new RefreshTokenDTO(),""));
         }
 
         byte[] decodePassword = Base64.getDecoder().decode(loginRequest.getPassword());
@@ -77,7 +82,8 @@ public class AuthColtroller {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(usersDetails.getId());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = SecutiryConstants.TOKEN_PREFIX+ jwtProvider.generateToken(usersDetails);
-        return  ResponseEntity.ok(new SuccessResponse(true,jwt, refreshToken.getToken(),usersDetails.getERole().name()));
+        RefreshTokenDTO refreshTokenDTO = refreshTokenFacade.refreshTokenDTO(refreshToken);
+        return  ResponseEntity.ok(new SuccessResponse(true, jwt, refreshTokenDTO ,usersDetails.getERole().name()));
     }
 
     @PostMapping("/refreshtoken")
