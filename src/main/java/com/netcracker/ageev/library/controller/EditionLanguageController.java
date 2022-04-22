@@ -19,22 +19,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/books/edition-language")
+@RequestMapping("/api")
 @CrossOrigin
 public class EditionLanguageController {
-    private EditionLanguageService editionLanguageService;
-    private EditionLanguageFacade editionLanguageFacade;
-    private ResponseErrorValidator responseErrorValidator;
+    private final EditionLanguageService editionLanguageService;
+    private final EditionLanguageFacade editionLanguageFacade;
+    private final ResponseErrorValidator responseErrorValidator;
 
     @Autowired
-    public EditionLanguageController(EditionLanguageService editionLanguageService, EditionLanguageFacade editionLanguageFacade, ResponseErrorValidator responseErrorValidator) {
+    public EditionLanguageController(EditionLanguageService editionLanguageService,
+                                     EditionLanguageFacade editionLanguageFacade,
+                                     ResponseErrorValidator responseErrorValidator) {
         this.editionLanguageService = editionLanguageService;
         this.editionLanguageFacade = editionLanguageFacade;
         this.responseErrorValidator = responseErrorValidator;
     }
 
 
-    @GetMapping("/all")
+    @GetMapping("/books/edition-language/all")
     ResponseEntity<List<EditionLanguageDTO>> getAllLanguage(){
         List<EditionLanguageDTO> editionLanguageDTOS = editionLanguageService.getAllLanguage()
                 .stream()
@@ -43,7 +45,7 @@ public class EditionLanguageController {
         return new ResponseEntity<>(editionLanguageDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/staff/books/edition-language/create")
     public ResponseEntity<Object> createEditionLanguage(@Valid @RequestBody EditionLanguageDTO editionLanguageDTO, BindingResult bindingResult, Principal principal) {
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if(!ObjectUtils.isEmpty(listError)) return listError;
@@ -53,7 +55,7 @@ public class EditionLanguageController {
     }
 
 
-    @PostMapping("/update")
+    @PostMapping("/staff/books/edition-language/update")
     public ResponseEntity<Object> updateEditionLanguage(@Valid @RequestBody EditionLanguageDTO editionLanguageDTO, BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
@@ -62,7 +64,7 @@ public class EditionLanguageController {
         return new ResponseEntity<>(editionLanguageDTO1,HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/staff/books/edition-language/delete")
     public ResponseEntity<Object> deleteTranslation(@Valid @RequestBody String id, BindingResult bindingResult, Principal principal){
         String resultDelete = editionLanguageService.deleteEditionLanguage(Integer.parseInt(id),principal);
         return new ResponseEntity<>(new MessageResponse(resultDelete),HttpStatus.OK);

@@ -38,8 +38,5 @@ public class BooksDTO {
     //Image
 
     private Integer imageToBookId;
-//    private String series;
-//    private Integer authorsName;
-//    private Authors authors;
 
 }

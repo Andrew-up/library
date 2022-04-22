@@ -16,7 +16,6 @@ public class SeriesFacade {
         seriesDTO.setSeriesId(series.getSeriesId());
         seriesDTO.setSeriesName(series.getSeriesName());
         seriesDTO.setAuthors(series.getAuthors());
-        System.out.println("seriesAuth: "+series.getAuthors());
         if (series.getAuthors()!=null){
             authors.setId(series.getAuthors().getId());
             authors.setFirstname(series.getAuthors().getFirstname());

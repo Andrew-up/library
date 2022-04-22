@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.EditionLanguageDTO;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.books.EditionLanguage;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.EditionLanguageRepository;
@@ -27,7 +28,8 @@ public class EditionLanguageService {
     private final UsersService usersService;
 
     @Autowired
-    public EditionLanguageService(EditionLanguageRepository editionLanguageRepository, UsersService usersService) {
+    public EditionLanguageService(EditionLanguageRepository editionLanguageRepository,
+                                  UsersService usersService) {
         this.editionLanguageRepository = editionLanguageRepository;
         this.usersService = usersService;
     }
@@ -49,19 +51,18 @@ public class EditionLanguageService {
     }
 
     public EditionLanguage updateEditionLanguage(EditionLanguageDTO editionLanguageDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
+
         List<String> arrayListError = new ArrayList<>(isEditionLanguageCorrect(editionLanguageDTO));
-        EditionLanguage editionLanguage = editionLanguageRepository.findEditionLanguageByLanguageId(editionLanguageDTO.getLanguageId()).orElseThrow(() -> new UsernameNotFoundException("Translation not found"));
+        EditionLanguage editionLanguage = editionLanguageRepository
+                .findEditionLanguageByLanguageId(editionLanguageDTO.getLanguageId())
+                .orElseThrow(() -> new DataNotFoundException("Translation not found. updateEditionLanguage: "+editionLanguageDTO.getLanguageId()));
         if (!ObjectUtils.isEmpty(arrayListError)) {
             editionLanguage.setLanguageName(arrayListError.toString());
             return editionLanguage;
         }
-        if (usersService.DataAccessToUser(users)) {
+
             return saveEditionLanguageDB(editionLanguageDTO, editionLanguage);
-        } else {
-            editionLanguage.setLanguageName("Для пользователя с ролью " + users.getERole() + " обновление невозможно");
-            return editionLanguage;
-        }
+
     }
 
     private EditionLanguage saveEditionLanguageDB(EditionLanguageDTO editionLanguageDTO, EditionLanguage editionLanguage) {
@@ -72,27 +73,25 @@ public class EditionLanguageService {
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             editionLanguage.setLanguageId(-2000);
+            LOG.error("Error when adding to the database, such an entry already exists. saveEditionLanguageDB :"+ editionLanguageDTO.getLanguageName());
             editionLanguage.setLanguageName("Ошибка при добавлении в бд, такая запись уже есть");
             return editionLanguage;
         }
     }
 
     public String deleteEditionLanguage(Integer editionLanguageId, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
-        if (usersService.DataAccessToUser(users)) {
+
+
             Optional<EditionLanguage> delete = editionLanguageRepository.findEditionLanguageByLanguageId(editionLanguageId);
             delete.ifPresent(editionLanguageRepository::delete);
             return "Язык издания с id: " + editionLanguageId + " удален";
-        } else {
-            return "Для пользователя с ролью " + users.getERole() + " удаление невозможно";
-        }
+
     }
 
     private ArrayList<String> isEditionLanguageCorrect(EditionLanguageDTO editionLanguageDTO) {
         ArrayList<String> listError = new ArrayList<>();
-        String regex = "^(([a-zA-Zа-яА-Я]*\\s*){2,3})$";
+        String regex = "^(([a-zA-Zа-яА-Я]+\\s*){2,3})$";
         boolean result = editionLanguageDTO.getLanguageName().matches(regex);
-        System.out.println("result:"+result);
         if (!result) {
             listError.add("Выражение не прошло проверку по формату записи");
         }

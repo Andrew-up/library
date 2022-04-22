@@ -1,8 +1,12 @@
 package com.netcracker.ageev.library.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import java.util.List;
+
+@Setter
+@Getter
 public class UserDTO {
 
     private Long id;
@@ -11,10 +15,13 @@ public class UserDTO {
     private String username;
     private String info;
     private String status;
+    private String newStatus;
     private String Role;
     private String Phone;
     private String address;
     private String dateOfBirth;
-    private Boolean isRequestCreated;
+    private List<BasketUsersDTO> basketUser;
+    private String newRole;
 
 }
+

@@ -1,14 +1,14 @@
 package com.netcracker.ageev.library.model.books;
 
-import com.netcracker.ageev.library.model.BaseEntity;
-import com.netcracker.ageev.library.model.users.Users;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
-public class AgeLimit  {
+public class AgeLimit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

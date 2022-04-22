@@ -7,6 +7,8 @@ import com.netcracker.ageev.library.model.books.Books;
 import com.netcracker.ageev.library.service.BasketUsersService;
 import com.netcracker.ageev.library.service.BooksService;
 import com.netcracker.ageev.library.validators.ResponseErrorValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,13 +26,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api")
 @CrossOrigin
 
 public class BooksController {
-    private BooksService booksService;
-    private BooksFacade booksFacade;
-    private ResponseErrorValidator responseErrorValidator;
+
+    private static final Logger LOG = LoggerFactory.getLogger(BooksController.class);
+
+    private final BooksService booksService;
+    private final BooksFacade booksFacade;
+    private final ResponseErrorValidator responseErrorValidator;
     private final BasketUsersService basketUsersService;
 
     @Autowired
@@ -45,7 +50,7 @@ public class BooksController {
     }
 
     @PermitAll()
-    @GetMapping("/all")
+    @GetMapping("/books/all")
     public ResponseEntity<List<BooksDTO>> getAllBooks() {
         List<BooksDTO> booksDTOS = booksService.getAllBooks()
                 .stream()
@@ -57,12 +62,38 @@ public class BooksController {
     }
 
     @PermitAll()
-    @PostMapping("/search")
+    @GetMapping("/books/newBook")
+    public ResponseEntity<List<BooksDTO>> getNewBookLimit3() {
+        Pageable paging = PageRequest.of(0, 5);
+        Page<Books> booksPage;
+        booksPage = booksService.getNewsBook(paging);
+        List<BooksDTO> booksDTOS = booksPage
+                .stream()
+                .map(booksFacade::booksDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
+    }
+
+    @PermitAll()
+    @GetMapping("/books/maxRent")
+    public ResponseEntity<List<BooksDTO>> getMaxRent() {
+        Pageable paging = PageRequest.of(0, 5);
+        Page<Books> booksPage = booksService.getMaxRent(paging);
+        List<BooksDTO> booksDTOS = booksPage
+                .stream()
+                .map(booksFacade::booksDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
+    }
+
+
+    @PermitAll()
+    @PostMapping("/books/search")
     public ResponseEntity<List<BooksDTO>> getAllBooksByInputSearch(@Valid @RequestBody SearchDTO search) {
 
         String inputSearch = search.getSearch().toLowerCase();
         String typeSearch = search.getTypeSearch().toLowerCase();
-        System.out.println("Строка поиска:" + inputSearch);
+        LOG.debug("Search input: " +inputSearch);
         List<BooksDTO> booksDTOS = booksService.getAllBooksByInputSearch(inputSearch,typeSearch)
                 .stream()
                 .map(booksFacade::searchBooksDTO)
@@ -72,7 +103,7 @@ public class BooksController {
 
 
     @PermitAll()
-    @GetMapping("/AllBookByPage")
+    @GetMapping("/books/AllBookByPage")
     public ResponseEntity<List<BooksDTO>> getAllBooksByNumberPage(@RequestParam(required = false) String title,
                                                                   @RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "3") int size) {
@@ -87,7 +118,7 @@ public class BooksController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/staff/books/create")
     public ResponseEntity<Object> createBook(@Valid @RequestBody BooksDTO booksDTO,
                                              BindingResult bindingResult, Principal principal) {
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
@@ -103,8 +134,8 @@ public class BooksController {
         return new ResponseEntity<>(booksDTO1, HttpStatus.OK);
     }
 
-    @GetMapping("/getAllById/{id}")
-    public ResponseEntity<List<BooksDTO>> getRentalRequestToUsersId(@PathVariable String id, Principal principal) {
+    @GetMapping("/books/getAllById/{id}")
+    public ResponseEntity<List<BooksDTO>> getRentalRequestToUsersId(@PathVariable String id) {
         System.out.println("TTTTTTTTTTTTTTTT");
         List<BooksDTO> booksDTOS = basketUsersService.getBasketToAllUsers(Long.parseLong(id))
                 .stream()
@@ -113,7 +144,17 @@ public class BooksController {
         return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
     }
 
-    @GetMapping("/book/{id}")
+    @GetMapping("/books/allByAuthorId/{authorId}")
+    public ResponseEntity<List<BooksDTO>> getAllByAuthorId(@PathVariable String authorId) {
+        System.out.println("TTTTTTTTTTTTTTTT");
+        List<BooksDTO> booksDTOS = booksService.getAllBookByAuthorsId(Integer.parseInt(authorId))
+                .stream()
+                .map(booksFacade::booksDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(booksDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping("/books/book/{id}")
     public ResponseEntity<BooksDTO> getBookById(@PathVariable String id, Principal principal) {
         Books books = booksService.getBookUserById(Long.parseLong(id));
         BooksDTO booksDTO = null;

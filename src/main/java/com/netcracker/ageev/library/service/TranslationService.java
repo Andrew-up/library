@@ -1,10 +1,7 @@
 package com.netcracker.ageev.library.service;
 
-import com.netcracker.ageev.library.dto.AgeLimitDTO;
 import com.netcracker.ageev.library.dto.TranslationDTO;
-import com.netcracker.ageev.library.model.books.AgeLimit;
 import com.netcracker.ageev.library.model.books.TranslationBooks;
-import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.TranslationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,30 +54,24 @@ public class TranslationService {
 
 
     public TranslationBooks updateTranslationBooks(TranslationDTO translationDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
+
         List<String> arrayListError = new ArrayList<>(isTranslationCorrect(translationDTO));
         TranslationBooks translationBooks = translationRepository.findTranslationBooksByTranslationId(translationDTO.getTranslationId()).orElseThrow(() -> new UsernameNotFoundException("Translation not found"));
         if (!ObjectUtils.isEmpty(arrayListError)) {
             translationBooks.setTranslationName(arrayListError.toString());
             return translationBooks;
         }
-        if (usersService.DataAccessToUser(users)) {
-            return saveTranslationDB(translationDTO, translationBooks);
-        } else {
-            translationBooks.setTranslationName("Для пользователя с ролью " + users.getERole() + " обновление невозможно");
-            return translationBooks;
-        }
+
+        return saveTranslationDB(translationDTO, translationBooks);
+
     }
 
     public String deleteTranslation(Integer translationId, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
-        if (usersService.DataAccessToUser(users)) {
-            Optional<TranslationBooks> delete = translationRepository.findTranslationBooksByTranslationId(translationId);
-            delete.ifPresent(translationRepository::delete);
-            return "Перевод с id: " + translationId + " удален";
-        } else {
-            return "Для пользователя с ролью " + users.getERole() + " удаление невозможно";
-        }
+
+        Optional<TranslationBooks> delete = translationRepository.findTranslationBooksByTranslationId(translationId);
+        delete.ifPresent(translationRepository::delete);
+        return "Перевод с id: " + translationId + " удален";
+
     }
 
     private TranslationBooks saveTranslationDB(TranslationDTO translationDTO, TranslationBooks translationBooks) {
@@ -102,9 +93,9 @@ public class TranslationService {
         String regex = "^(([a-zA-Zа-яА-Я]*\\s*){2,3})$";
 
         boolean result = translationDTO.getTranslationName().matches(regex);
-        System.out.println("result:"+result);
+        System.out.println("result:" + result);
 
-        if (!result||translationDTO.getTranslationName().equals("")) {
+        if (!result || translationDTO.getTranslationName().equals("")) {
             listError.add("Выражение не прошло проверку по формату записи");
         }
 

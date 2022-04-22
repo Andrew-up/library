@@ -12,13 +12,13 @@ public interface BasketUsersRepository  extends JpaRepository<BasketUser,Long> {
 
     List<BasketUser> findAll ();
 
-
+    List<BasketUser> findAllByBooksIdAndUsersId(Long books_id,Long user_id);
 
     List<BasketUser> findAllByUsersId(Long id);
 
     Optional<BasketUser> findBasketUserByBasketUserId(Long basketUserId);
 
-    List<BasketUser> findBasketUserByUsersIdAndIsTheBasketIsFalseAndIsRequestCreatedIsTrue(Long basketUserId);
+    List<BasketUser> findBasketUserByUsersId(Long basketUserId);
 
     List<BasketUser> findBasketUserByUsersIdAndIsTheBasketIsTrueAndIsRequestCreatedIsFalse(Long basketUserId);
 

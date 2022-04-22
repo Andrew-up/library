@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -47,11 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(SecutiryConstants.GUEST_BOOKS).permitAll()
                 .antMatchers(SecutiryConstants.ALLBOOK_PAGE).permitAll()
                 .antMatchers(SecutiryConstants.SEARCH).permitAll()
-                .antMatchers(SecutiryConstants.TEST_ROLE).hasRole("USER")
-
-
-//                .antMatchers(SecutiryConstants.AUTHORS_API).permitAll()
-//                .antMatchers(SecutiryConstants.BOOK_GENRES_API).permitAll()
+                .antMatchers(SecutiryConstants.AUTHORS_API).permitAll()
+                .antMatchers(SecutiryConstants.STAFF).hasAnyRole("ADMIN","WORKER")
+                .antMatchers(SecutiryConstants.ADMIN).hasRole("ADMIN")
                 .anyRequest().authenticated();
 
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
@@ -60,7 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(configUserDetailsService).passwordEncoder(bCryptPasswordEncoder());
         auth.userDetailsService(configUserDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
 

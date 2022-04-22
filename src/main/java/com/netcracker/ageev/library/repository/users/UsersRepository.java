@@ -25,8 +25,9 @@ public interface UsersRepository extends JpaRepository<Users,Long> {
 
     Optional<Users> findUserByEmail(String email);
 
-    @Query("select u from Users u left join BasketUser bu on u.id= bu.usersId.id where bu.isRequestCreated is true ")
-    List<Users> findAllByBasketUserNotNull();
+    @Query("select u from Users u left join BasketUser bu on u.id = bu.usersId where bu.isRequestCreated is true group by u")
+    List<Users> findAllByBasketByUserCustomQuery();
 
+    @Query("select u from Users u where u.email <> 'admin@library.ru' order by u.id")
     List<Users> findAllByOrderById();
 }

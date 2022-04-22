@@ -20,8 +20,6 @@ public class AuthorsFacade {
         authorsDTO.setLastname(authors.getLastname());
         authorsDTO.setPatronymic(authors.getPatronymic());
         authorsDTO.setDateOfBirth(authors.getDateOfBirth());
-//        authorsDTO.setBooks(authors.getBooks());
-//        authorsDTO.setBooksString(authors.getAuthorsList());
         return authorsDTO;
     }
 }

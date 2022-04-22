@@ -2,6 +2,7 @@ package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.BooksDTO;
 import com.netcracker.ageev.library.exception.DataNotFoundException;
+import com.netcracker.ageev.library.model.books.Authors;
 import com.netcracker.ageev.library.model.books.Books;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BooksRepository;
@@ -67,6 +68,18 @@ public class BooksService {
     public List<Books> getAllBooks() {
         return booksRepository.findAllByOrderById();
     }
+    public Page<Books> getNewsBook(Pageable pageable) {
+        return booksRepository.findAllByOrderByIdDesc(pageable);
+    }
+    public Page<Books> getMaxRent(Pageable pageable) {
+        Page<Books> page =  booksRepository.findFrequentRent(pageable);
+        return page;
+    }
+
+    public List<Books> getAllBookByAuthorsId(Integer id) {
+        Authors authors = authorsService.getAuthorsById(id);
+        return booksRepository.findAllByAuthors(authors);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -84,7 +97,7 @@ public class BooksService {
     public List<Books> getAllBooksByInputSearch(String inputSearch, String typeSearch) {
         List<Books> booksListSearch;
         System.out.println("Область поиска: "+typeSearch);
-        if (typeSearch.equals("booktitle")) {
+        if (typeSearch.equals("bookTitle")) {
             booksListSearch = booksRepository.findAllByBookTitle(inputSearch);
         }
          else if (typeSearch.equals("authors")) {
@@ -113,7 +126,7 @@ public class BooksService {
     public Books getBookUserById(Long id) {
         Books books;
         try {
-            books = booksRepository.findBooksById(id).orElseThrow(() -> new DataNotFoundException("not found"));
+            books = booksRepository.findBooksById(id).orElseThrow(() -> new DataNotFoundException("not found. getBookUserById: "+ id));
             return books;
         } catch (DataNotFoundException e) {
             e.printStackTrace();
@@ -137,11 +150,21 @@ public class BooksService {
         books.setPublisherId(publisherService.getPublisherById(booksDTO.getPublisherId())); // Издательство
         books.setNumberPages(booksDTO.getNumberPages()); // кол-во страниц
         books.setCoverId(coverBookService.getCoverBookById(booksDTO.getCoverId())); // Тип обложки
-        books.setSeries(bookSeriesService.getSeriesById(booksDTO.getBookSeries())); // Серия
+        try {
+            books.setSeries(bookSeriesService.getSeriesById(booksDTO.getBookSeries())); // Серия
+        } catch (Exception e) {
+            LOG.error(String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
         books.setISBN(booksDTO.getNameISBN());   //ISBN
         books.setAgeLimitCode(ageLimitService.getAgeLimitById(booksDTO.getAgeLimitCode()));  // Возрастное ограничение
         books.setLanguageId(editionLanguageService.getEditionLanguageById(booksDTO.getLanguageId()));// Язык издания
-        books.setTranslation(translationService.getTranslationById(booksDTO.getTranslationId())); // Автор перевода
+        try {
+            books.setTranslation(translationService.getTranslationById(booksDTO.getTranslationId())); // Автор перевода
+        } catch (Exception e) {
+            LOG.error(String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
         books.setPrice(priceService.getPriceById(booksDTO.getPriceId()));
         books.setCountBooks(booksDTO.getCountBooks());
         return booksRepository.save(books);
@@ -155,8 +178,8 @@ public class BooksService {
 
     public Books getBookById(Long id) {
         try {
-            return booksRepository.findBooksById(id).orElseThrow(() -> new NullPointerException("not found"));
-        } catch (NullPointerException e) {
+            return booksRepository.findBooksById(id).orElseThrow(() -> new DataNotFoundException("not found. getBookById: "+id));
+        } catch (DataNotFoundException e) {
             return null;
         }
     }
@@ -182,9 +205,6 @@ public class BooksService {
         if (booksDTO.getNumberPages() == null) {
             listError.add("кол-во страниц не корректно");
         }
-        if (booksDTO.getBookSeries() == 0) {
-            listError.add("Серия не корректна");
-        }
         if (booksDTO.getNameISBN().equals("null")) {
             listError.add("ISBN не корректен");
         }
@@ -194,9 +214,9 @@ public class BooksService {
         if (booksDTO.getLanguageId() == 0) {
             listError.add("Язык издания не корректен");
         }
-        if (booksDTO.getTranslationId() == 0) {
-            listError.add("Автор перевода не корректен");
-        }
+//        if (booksDTO.getTranslationId() == 0) {
+//            listError.add("Автор перевода не корректен");
+//        }
         if (booksDTO.getPriceId() == 0) {
             listError.add("Стоимость аренды не корректна");
         }

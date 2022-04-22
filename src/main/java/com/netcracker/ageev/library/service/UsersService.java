@@ -1,10 +1,14 @@
 package com.netcracker.ageev.library.service;
 
+import com.netcracker.ageev.library.controller.AuthController;
 import com.netcracker.ageev.library.dto.UserDTO;
 import com.netcracker.ageev.library.model.enums.ERole;
 import com.netcracker.ageev.library.model.enums.Status;
+import com.netcracker.ageev.library.model.users.Employee;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.payload.request.SignupRequest;
+import com.netcracker.ageev.library.payload.responce.RegistrationException;
+import com.netcracker.ageev.library.repository.users.EmployeeRepository;
 import com.netcracker.ageev.library.repository.users.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,18 +21,22 @@ import java.security.Principal;
 import java.util.Base64;
 import java.util.List;
 
+
 @Service
 public class UsersService {
 
-    public static final Logger LOG = LoggerFactory.getLogger(UsersService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UsersService.class);
     private final UsersRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public UsersService(UsersRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UsersService(UsersRepository userRepository,
+                        BCryptPasswordEncoder bCryptPasswordEncoder,
+                        EmployeeRepository employeeRepository) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
-
+        this.employeeRepository = employeeRepository;
     }
 
     public Users createUser(SignupRequest userIn) {
@@ -41,38 +49,33 @@ public class UsersService {
         user.setPassword(bCryptPasswordEncoder.encode(decodedString));
         user.setStatus(Status.ACTIVE);
         user.setERole(ERole.ROLE_USER);
-//        user.getRoles().add(ERole.ROLE_USER);
-
         try {
-            LOG.info("Saving user {} ", userIn.getEmail());
             return userRepository.save(user);
-        } catch (Exception e) {
-            LOG.error("Error registration {} ", e.getMessage());
-
-            // TODO: добавить свое исключение сюда
-            throw new UsernameNotFoundException("The user " + user.getEmail() + "already exist!");
-
+        } catch (RuntimeException e) {
+            LOG.error(e.getMessage());
+            throw new RegistrationException();
         }
     }
 
 
-    public Users getCurrentUser(Principal principal){
+    public Users getCurrentUser(Principal principal) {
         return getUserByPrincipal(principal);
     }
 
-    public List<Users> getAllUsers(){
+    public List<Users> getAllUsers() {
         return userRepository.findAllByOrderById();
     }
-    public List<Users> getAllUsersRequestCreated(){
-        return userRepository.findAllByBasketUserNotNull();
+
+    public List<Users> getAllUsersRequestCreated() {
+        return userRepository.findAllByBasketByUserCustomQuery();
     }
 
     public Users getUserById(Long userId) {
         return userRepository.findUsersById(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
 
-    public Users findUsersByEmail(String email){
-        return userRepository.findUsersByEmail(email).orElseThrow(() ->  new UsernameNotFoundException("user not found"));
+    public Users findUsersByEmail(String email) {
+        return userRepository.findUsersByEmail(email).orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
 
     public Users getUserByPrincipal(Principal principal) {
@@ -83,36 +86,62 @@ public class UsersService {
 
     public Users updateUser(UserDTO userDTO, Principal principal) {
         Users user = getUserByPrincipal(principal);
-        if(userDTO.getFirstname()!=null && !userDTO.getFirstname().equals("")){
+        if (userDTO.getFirstname() != null && !userDTO.getFirstname().equals("")) {
             user.setFirstname(userDTO.getFirstname());
         }
-        if(userDTO.getLastname()!=null){
+        if (userDTO.getLastname() != null) {
             user.setLastname(userDTO.getLastname());
         }
-        if(userDTO.getAddress()!=null){
+        if (userDTO.getAddress() != null) {
             user.setAddress(userDTO.getAddress());
         }
-        if (userDTO.getInfo()!=null) {
+        if (userDTO.getInfo() != null) {
             user.setInfo(userDTO.getInfo());
         }
-        if (userDTO.getPhone()!=null) {
+        if (userDTO.getPhone() != null) {
             user.setPhone(userDTO.getPhone());
         }
-        if (userDTO.getDateOfBirth()!=null) {
+        if (userDTO.getDateOfBirth() != null) {
             user.setDateOfBirth(userDTO.getDateOfBirth());
         }
-        if (userDTO.getInfo()!=null) {
+        if (userDTO.getInfo() != null) {
             user.setInfo(userDTO.getInfo());
         }
         return userRepository.save(user);
     }
 
-    public boolean DataAccessToUser(Users users) {
-        if (users.getERole().equals(ERole.ROLE_WORKER) || (users.getERole().equals(ERole.ROLE_ADMIN))) {
-            return true;
-        } else {
-            return false;
+    public Users updateUserRoleOrActive(UserDTO userDTO) {
+        Users users = userRepository.findUsersById(userDTO.getId()).orElseThrow(() -> new UsernameNotFoundException("not found"));
+        Employee employee;
+        if (userDTO.getNewRole() != null) {
+            if (userDTO.getNewRole().equals("ROLE_ADMIN")) {
+                users.setERole(ERole.ROLE_ADMIN);
+                employee = new Employee();
+                employee.setUsers(users);
+                employeeRepository.save(employee);
+            }
+            if (userDTO.getNewRole().equals("ROLE_USER")) {
+                users.setERole(ERole.ROLE_USER);
+            }
+            if (userDTO.getNewRole().equals("ROLE_WORKER")) {
+                users.setERole(ERole.ROLE_WORKER);
+                employee = new Employee();
+                employee.setUsers(users);
+                employeeRepository.save(employee);
+            }
         }
+
+
+        if (userDTO.getNewStatus() != null) {
+            if (userDTO.getNewStatus().equals("ACTIVE")) {
+                users.setStatus(Status.ACTIVE);
+            }
+            if (userDTO.getNewStatus().equals("NOT_ACTIVE")) {
+                users.setStatus(Status.NOT_ACTIVE);
+            }
+        }
+        return userRepository.save(users);
+
     }
 
 }

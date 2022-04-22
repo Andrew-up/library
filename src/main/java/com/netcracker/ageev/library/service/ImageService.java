@@ -1,6 +1,8 @@
 package com.netcracker.ageev.library.service;
 
-import com.netcracker.ageev.library.exception.ErrorMessage;
+import com.netcracker.ageev.library.LibraryApplication;
+import com.netcracker.ageev.library.dto.ImageDTO;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.Image;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.ImageRepository;
@@ -9,84 +11,86 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ImageService {
 
-    public static final Logger LOG = LoggerFactory.getLogger(ImageService.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(ImageService.class);
     private final BooksRepository booksRepository;
     private final ImageRepository imageRepository;
     private final UsersService usersService;
 
     @Autowired
-    public ImageService(ImageRepository imageRepository, BooksRepository booksRepository,UsersService usersService) {
+    public ImageService(ImageRepository imageRepository, BooksRepository booksRepository, UsersService usersService) {
         this.imageRepository = imageRepository;
         this.booksRepository = booksRepository;
         this.usersService = usersService;
     }
 
-    @Value("${upload.path}")
-    private String uploadPath;
-
-    public Image uploadImage(MultipartFile file) throws IOException {
-        Image image = new Image();
-        File uploadDir = new File(uploadPath);
-        boolean isDirectoryCreated = uploadDir.exists() || uploadDir.mkdirs();
-        if (!isDirectoryCreated) {
-            isDirectoryCreated = uploadDir.mkdirs();
-        }
-        if(isDirectoryCreated){
-            String uuidFile= UUID.randomUUID().toString();
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-            image.setFileName(resultFileName);
-            LOG.info("Upload image");
-            file.transferTo(new File(uploadPath+ "/" +resultFileName));
-        }
-        return imageRepository.save(image);
-    }
-
-    // TODO: Добавить свое исключение
-    public String getBookImage(String idImage) {
+    public ImageDTO getBookImage(String idImage) throws IOException {
         long id = Long.parseLong(idImage);
         String image = null;
         try {
-            image = imageRepository.findByBooksId(id).orElseThrow(() -> new NullPointerException("message")).getFileName();
-        } catch (NullPointerException e) {
+            image = imageRepository.findByBooksId(id).orElseThrow(() -> new DataNotFoundException("message")).getFileName();
+        } catch (DataNotFoundException e) {
+            LOG.info("Image book not found. id Image book:" + idImage);
             image = "/not_found.jpg";
             e.printStackTrace();
         }
-        return image;
+        Path path = Paths.get(System.getProperty("user.dir") + "/image/books/" + image);
+        return getImageByPathAndConvert(path,"bookId: "+idImage);
 
     }
 
-    public String getProfileImage(Principal principal) {
+    public ImageDTO getProfileImage(Principal principal) throws IOException {
         Users users = usersService.getUserByPrincipal(principal);
         String image = null;
         try {
-            image = users.getId()+"/"+imageRepository.findByUsersId(users.getId()).orElseThrow(() -> new NullPointerException("message")).getFileName();
-        } catch (NullPointerException e) {
+            image = users.getId() + "/" + imageRepository.findByUsersId(users.getId()).orElseThrow(() -> new DataNotFoundException("message")).getFileName();
+        } catch (DataNotFoundException e) {
             image = "/not_found.jpg";
             e.printStackTrace();
         }
-        return image;
+        Path path = Paths.get(System.getProperty("user.dir") + "/image/users/" + image);
+        return getImageByPathAndConvert(path,"userId: "+users.getId());
 
+    }
+
+    private ImageDTO getImageByPathAndConvert(Path path, String fileString) throws IOException {
+        ImageDTO imageDTO = new ImageDTO();
+        BufferedImage img;
+//        LOG.debug(path.toString());
+        if (Files.exists(path)) {
+            img = ImageIO.read(new File(path.toString()));
+        } else {
+            LOG.warn("the file is in the database but not on disk: " + fileString);
+            img = ImageIO.read(new File(System.getProperty("user.dir") + "/image/not_found.jpg"));
+        }
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        ImageIO.write(img, "jpg", bao);
+        imageDTO.setBytes(bao.toByteArray());
+        return imageDTO;
     }
 
 
     public Image uploadImageBooks(MultipartFile file, String id) throws IOException {
         Image image = new Image();
-        File uploadDir = new File(uploadPath + "/books");
+        File uploadDir = new File(System.getProperty("user.dir") + "/image/books");
         boolean isDirectoryCreated = uploadDir.exists() || uploadDir.mkdirs();
         if (!isDirectoryCreated) {
             isDirectoryCreated = uploadDir.mkdirs();
@@ -106,39 +110,34 @@ public class ImageService {
     public Image uploadImageUserProfile(MultipartFile file, Principal principal) throws IOException {
         Users users = usersService.getUserByPrincipal(principal);
         Image image = new Image();
-        File uploadDir = new File(uploadPath + "/users/"+users.getId());
+        File uploadDir = new File(System.getProperty("user.dir") + "/image/users/" + users.getId());
         boolean isDirectoryCreated = uploadDir.exists() || uploadDir.mkdirs();
         if (!isDirectoryCreated) {
             isDirectoryCreated = uploadDir.mkdirs();
+            LOG.warn("failed to create Directory: " + uploadDir);
         }
         if (isDirectoryCreated) {
             String uuidFile = UUID.randomUUID().toString();
             String resultFileName = uuidFile + "." + file.getOriginalFilename();
             file.transferTo(new File(uploadDir + "/" + resultFileName));
-            Image image1 = null;
-            try {
-                image1 = imageRepository.findByUsersId(users.getId()).orElseThrow(() -> new FileNotFoundException("Not found"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            if(image1!=null){
-                File oldImageProfile = new File(uploadDir+"/"+image1.getFileName());
-                if(oldImageProfile.delete()){
-                    LOG.info("Старый файл удален");
-                }
-                else {
-                    LOG.info("Файл не найден");
+            Optional<Image> image1 = imageRepository.findByUsersId(users.getId());
+            if (image1.isPresent()) {
+                File oldImageProfile = new File(uploadDir + "/" + image1.get().getFileName());
+                if (oldImageProfile.delete()) {
+                    LOG.info("old image profile delete " + users.getEmail());
+                } else {
+                    LOG.info("file not found " + users.getEmail());
                 }
 
-                image1.setFileName(resultFileName);
-                image1.setUsersId(users.getId());
-                LOG.info("update image");
-                LOG.info("Image: "+image1.getFileName());
-                return imageRepository.save(image1);
+                Image image2 = image1.get();
+                image2.setFileName(resultFileName);
+                image2.setUsersId(users.getId());
+                LOG.info("Update image. New name: " + image2.getFileName());
+                return imageRepository.save(image2);
             }
             image.setFileName(resultFileName);
             image.setUsersId(users.getId());
-            LOG.info("new Upload image");
+            LOG.info("new Upload image" + image.getFileName());
         }
         return imageRepository.save(image);
     }

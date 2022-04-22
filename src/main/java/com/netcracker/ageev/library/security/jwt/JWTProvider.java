@@ -1,9 +1,12 @@
 package com.netcracker.ageev.library.security.jwt;
 
 
+import com.netcracker.ageev.library.LibraryApplication;
+import com.netcracker.ageev.library.controller.AuthController;
 import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.service.token.RefreshTokenService;
 import io.jsonwebtoken.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,20 +19,15 @@ import static com.netcracker.ageev.library.security.SecutiryConstants.SECRET_KEY
 
 @Component
 public class JWTProvider {
-
-
-    public static final Logger LOG = LoggerFactory.getLogger(JWTProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JWTProvider.class);
 
     public String generateToken(Users user) {
         Date now = new Date(System.currentTimeMillis());
         Date expirationTime = new Date(now.getTime() + EXPIRATION_TIME);
-        Calendar calendar = new GregorianCalendar();
-//        Users user = (Users) authentication.getPrincipal();
         String userId = Long.toString(user.getId());
-
         Map<String, Object> claimsMap = new HashMap<>();
+
         claimsMap.put("id", userId);
-//    claimsMap.put("email",user.getEmail());
         claimsMap.put("firstname", user.getFirstname());
         claimsMap.put("lastname", user.getLastname());
         claimsMap.put("status", user.getStatus());
@@ -45,8 +43,6 @@ public class JWTProvider {
     }
 
     public boolean validateToken(String token) {
-
-
         try {
             Jwts.parser()
                     .setSigningKey(SECRET_KEY)
@@ -60,7 +56,6 @@ public class JWTProvider {
             LOG.error(exception.getMessage());
             return false;
         }
-
     }
 
     public Long getUserIdFromToken(String token) {
@@ -71,12 +66,6 @@ public class JWTProvider {
         String userId = (String) claims.get("id");
         return Long.parseLong(userId);
     }
-
-//    public String generateTokenFromUsername(Users user) {
-////        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-////                .setExpiration(new Date((new Date()).getTime() + EXPIRATION_TIME)).signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-////                .compact();
-//    }
 
 }
 

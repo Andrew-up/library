@@ -31,16 +31,13 @@ public class BooksFacade {
         booksDTO.setLanguageName(books.getLanguageId().getLanguageName());
         booksDTO.setPriceName(books.getPrice().getPriceRent().toString());
         booksDTO.setCountBooks(books.getCountBooks());
-//        booksDTO.setRentalRequestToUserList(books.getRentalRequestToUser().stream().map(BasketUser::getUsers).map(Users::getId).collect(Collectors.toList()));
-//        System.out.println("array22: "+books.getRentalRequestToUser().stream().map(BasketUser::getUsers).collect(Collectors.toList()));
-//        System.out.println(books.getSeries().getSeriesName());
-//        System.out.println(books.getSeries().getSeriesId());
-//        System.out.println(books.getGenreCode().getGenre());
-
+        booksDTO.setPriceId(books.getPrice().getId());
         return booksDTO;
+
     }
 
     public BooksDTO searchBooksDTO(Books books) {
+
         BooksDTO booksDTO = new BooksDTO();
         booksDTO.setBookId(books.getId());
         booksDTO.setBookTitle(books.getBookTitle());
@@ -59,6 +56,7 @@ public class BooksFacade {
         booksDTO.setPriceName(books.getPrice().getPriceRent().toString());
         booksDTO.setCountBooks(books.getCountBooks());
         return booksDTO;
+
     }
 
 

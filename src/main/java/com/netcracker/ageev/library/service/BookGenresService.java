@@ -1,9 +1,8 @@
 package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.BookGenresDTO;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.books.BookGenres;
-import com.netcracker.ageev.library.model.enums.ERole;
-import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.BookGenresRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,33 +37,29 @@ public class BookGenresService {
     }
 
     public BookGenres createGenre(BookGenresDTO bookGenresDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
+
         BookGenres bookGenres = new BookGenres();
-        if (usersService.DataAccessToUser(users)) {
-            return getBookGenres(bookGenresDTO, bookGenres);
-        } else {
-            bookGenres.setGenre("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
-            return bookGenres;
-        }
+
+        return getBookGenres(bookGenresDTO, bookGenres);
+
     }
 
     // TODO: 22.02.2022
     //    -  Добавить свои исключения
 
     public BookGenres updateGenre(BookGenresDTO bookGenresDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
-        BookGenres bookGenres = bookGenresRepository.findBookGenresByBookGenresId(bookGenresDTO.getBookGenresId()).orElseThrow(() -> new UsernameNotFoundException("Genre not found"));
-        if (usersService.DataAccessToUser(users)) {
-            return getBookGenres(bookGenresDTO, bookGenres);
-        } else {
-            bookGenres.setGenre("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
-            return bookGenres;
-        }
+
+        BookGenres bookGenres = bookGenresRepository.findBookGenresByBookGenresId(bookGenresDTO.getBookGenresId()).orElseThrow(() -> new DataNotFoundException("Genre not found. updateGenre"+ bookGenresDTO.getBookGenresId()));
+        return getBookGenres(bookGenresDTO, bookGenres);
+
     }
 
     public void deleteGenre(Integer bookId) {
         Optional<BookGenres> delete = bookGenresRepository.findBookGenresByBookGenresId(bookId);
         delete.ifPresent(bookGenresRepository::delete);
+        if (!delete.isPresent()){
+            throw  new DataNotFoundException("Genre not found. deleteGenre: " +bookId);
+        }
     }
 
 
@@ -81,6 +76,7 @@ public class BookGenresService {
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             bookGenres.setBookGenresId(-2000);
+            LOG.error("Error when adding to the database, such an entry already exists. getBookGenres: "+ bookGenresDTO.getGenresName());
             bookGenres.setGenre("Ошибка при добавлении в бд, такая запись уже есть");
             return bookGenres;
         }
@@ -91,6 +87,7 @@ public class BookGenresService {
         String regex = "(^[a-zA-Zа-яА-Я]+)|((^[a-zA-Zа-яА-Я]+\\s[a-zA-Zа-яА-Я]+))";
         boolean result = bookGenresDTO.getGenresName().matches(regex);
         if (!result) {
+            LOG.error("The expression did not pass the record format check. isGenreCorrect: "+ bookGenresDTO.getGenresName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;
@@ -98,8 +95,8 @@ public class BookGenresService {
 
     public BookGenres getGenresById(Integer id) {
         try {
-            return bookGenresRepository.findBookGenresByBookGenresId(id).orElseThrow(() -> new NullPointerException("not found"));
-        } catch (NullPointerException e) {
+            return bookGenresRepository.findBookGenresByBookGenresId(id).orElseThrow(() -> new DataNotFoundException("not found. getGenresById: "+ id));
+        } catch (DataNotFoundException e) {
             return null;
         }
     }

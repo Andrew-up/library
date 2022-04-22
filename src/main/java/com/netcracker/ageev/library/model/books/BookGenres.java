@@ -1,18 +1,19 @@
 package com.netcracker.ageev.library.model.books;
 
-import com.netcracker.ageev.library.model.BaseEntity;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class BookGenres {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bookGenresId;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String genre;
 
 }

@@ -14,4 +14,9 @@ public class BasketUsersDTO {
     private String priceId;
     private String priceName;
     private String userId;
+    private Boolean isTheBasket;
+    private Boolean isRequestCreated;
+    private Boolean isIssued;
+    private String dateIssue;
+
 }

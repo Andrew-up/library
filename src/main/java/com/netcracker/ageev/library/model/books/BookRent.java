@@ -1,17 +1,17 @@
 package com.netcracker.ageev.library.model.books;
 
-import com.netcracker.ageev.library.model.BaseEntity;
 import com.netcracker.ageev.library.model.users.BasketUser;
 import com.netcracker.ageev.library.model.users.Employee;
 import com.netcracker.ageev.library.model.users.Users;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @Entity
-public class BookRent  {
+public class BookRent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,17 +39,17 @@ public class BookRent  {
     private BasketUser basketUser;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Price.class)
-    @JoinColumn(name = "priceId",nullable = true)
+    @JoinColumn(name = "priceId", nullable = true)
     private Price priceId;
 
     public Books getBooksId() {
         Books books = new Books();
         try {
-            if(booksId.getId()!=null){
+            if (booksId.getId() != null) {
                 books.setId(booksId.getId());
             }
             return booksId;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             books.setBookTitle("Книга не найдена");
             return books;
         }
@@ -59,11 +59,11 @@ public class BookRent  {
     public Users getUsersId() {
         Users users = new Users();
         try {
-            if(usersId.getId()!=null){
+            if (usersId.getId() != null) {
                 users.setId(usersId.getId());
             }
             return usersId;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             users.setFirstname("Юзер не найден");
             return users;
         }
@@ -72,11 +72,11 @@ public class BookRent  {
     public Price getPriceId() {
         Price price = new Price();
         try {
-            if(priceId.getId()!=null){
+            if (priceId.getId() != null) {
                 price.setId(priceId.getId());
             }
             return priceId;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             price.setPriceRent(0.0);
             return price;
         }

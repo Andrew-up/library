@@ -1,19 +1,20 @@
 package com.netcracker.ageev.library.model.users;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.netcracker.ageev.library.model.BaseEntity;
 import com.netcracker.ageev.library.model.enums.ERole;
 import com.netcracker.ageev.library.model.enums.Status;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Users implements UserDetails {
     @Id
@@ -43,8 +44,8 @@ public class Users implements UserDetails {
     @Enumerated(EnumType.STRING)
     private ERole eRole;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "usersId")
-    private BasketUser basketUser;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersId")
+    private List<BasketUser> basketUser;
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
@@ -93,15 +94,6 @@ public class Users implements UserDetails {
     }
 
     public Users() {
-
     }
-
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-//        list.add(new SimpleGrantedAuthority(eRole.name()));
-//        return list;
-//    }
 
 }

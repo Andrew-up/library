@@ -20,22 +20,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/books/genres")
+@RequestMapping("/api")
 @CrossOrigin
 public class BookGenresController {
 
-    private BookGenresFacade bookGenresFacade;
-    private BookGenresService bookGenresService;
-    private ResponseErrorValidator responseErrorValidator;
+    private final BookGenresFacade bookGenresFacade;
+    private final BookGenresService bookGenresService;
+    private final ResponseErrorValidator responseErrorValidator;
 
     @Autowired
-    public BookGenresController(BookGenresFacade bookGenresFacade, BookGenresService bookGenresService, ResponseErrorValidator responseErrorValidator) {
+    public BookGenresController(BookGenresFacade bookGenresFacade,
+                                BookGenresService bookGenresService,
+                                ResponseErrorValidator responseErrorValidator) {
         this.bookGenresFacade = bookGenresFacade;
         this.bookGenresService = bookGenresService;
         this.responseErrorValidator = responseErrorValidator;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/books/genres/all")
     public ResponseEntity<List<BookGenresDTO>> getAllGenres() {
         List<BookGenresDTO> bookGenresDTOS = bookGenresService.getAllBookGenres()
                 .stream()
@@ -44,7 +46,7 @@ public class BookGenresController {
         return new ResponseEntity<>(bookGenresDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/staff/books/genres/create")
     public ResponseEntity<Object> createGenre(@Valid @RequestBody BookGenresDTO bookGenresDTO, BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
@@ -53,7 +55,7 @@ public class BookGenresController {
         return new ResponseEntity<>(bookGenresDTO1,HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/staff/books/genres/update")
     public ResponseEntity<Object> updateGenre(@Valid @RequestBody BookGenresDTO bookGenresDTO, BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
@@ -62,7 +64,7 @@ public class BookGenresController {
         return new ResponseEntity<>(bookGenresDTO1,HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/staff/books/genres/delete")
     public ResponseEntity<Object> deleteGenre(@Valid @RequestBody String id, BindingResult bindingResult, Principal principal){
           bookGenresService.deleteGenre(Integer.parseInt(id));
         return new ResponseEntity<>(new MessageResponse("The genre book "+ id + " was removed"),HttpStatus.OK);

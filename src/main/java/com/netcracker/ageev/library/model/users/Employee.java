@@ -1,11 +1,12 @@
 package com.netcracker.ageev.library.model.users;
 
-import com.netcracker.ageev.library.model.BaseEntity;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Employee {
 
@@ -16,7 +17,4 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Users.class)
     private Users users;
 
-//    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Role.class)
-//    @JoinColumn(name = "roleId")
-//    private Role roleId;
 }

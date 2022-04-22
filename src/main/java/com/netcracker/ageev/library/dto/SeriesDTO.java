@@ -1,9 +1,11 @@
 package com.netcracker.ageev.library.dto;
 
 import com.netcracker.ageev.library.model.books.Authors;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class SeriesDTO {
 
     private Integer seriesId;

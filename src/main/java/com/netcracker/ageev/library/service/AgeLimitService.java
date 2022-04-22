@@ -1,16 +1,13 @@
 package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.AgeLimitDTO;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.books.AgeLimit;
-import com.netcracker.ageev.library.model.enums.ERole;
-import com.netcracker.ageev.library.model.users.Users;
 import com.netcracker.ageev.library.repository.books.AgeLimitRepository;
-import com.netcracker.ageev.library.repository.users.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -18,25 +15,17 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class AgeLimitService {
 
-
     public static final Logger LOG = LoggerFactory.getLogger(AgeLimitService.class);
 
-
     private final AgeLimitRepository ageLimitRepository;
-    private final UsersRepository usersRepository;
-    private final UsersService usersService;
 
     @Autowired
-    public AgeLimitService(AgeLimitRepository ageLimitRepository, UsersRepository usersRepository, UsersService usersService) {
+    public AgeLimitService(AgeLimitRepository ageLimitRepository) {
         this.ageLimitRepository = ageLimitRepository;
-        this.usersRepository = usersRepository;
-        this.usersService = usersService;
     }
 
     public List<AgeLimit> getAllAgeLimit() {
@@ -48,48 +37,36 @@ public class AgeLimitService {
     }
 
     public AgeLimit createAgeLimit(AgeLimitDTO ageLimitDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
+
         List<String> arrayListError = new ArrayList<>(isAgeLimitCorrect(ageLimitDTO));
         AgeLimit ageLimit = new AgeLimit();
         if (!ObjectUtils.isEmpty(arrayListError)) {
             ageLimit.setAge(arrayListError.toString());
             return ageLimit;
         }
-//        if (usersService.DataAccessToUser(users)) {
-            return saveAgeLimit(ageLimitDTO, ageLimit);
-//        } else {
-//            ageLimit.setAge("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
-//            return ageLimit;
-//        }
+        return saveAgeLimit(ageLimitDTO, ageLimit);
+
     }
 
 
     public AgeLimit updateAgeLimit(AgeLimitDTO ageLimitDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
         List<String> arrayListError = new ArrayList<>(isAgeLimitCorrect(ageLimitDTO));
-        AgeLimit ageLimit = ageLimitRepository.findAgeLimitById(ageLimitDTO.getAgeLimitId()).orElseThrow(() -> new UsernameNotFoundException("Age Limit not found"));
+        AgeLimit ageLimit = ageLimitRepository.findAgeLimitById(ageLimitDTO.getAgeLimitId()).orElseThrow(() -> new DataNotFoundException("Age Limit not found"));
         if (!ObjectUtils.isEmpty(arrayListError)) {
             ageLimit.setAge(arrayListError.toString());
             return ageLimit;
         }
-        if (usersService.DataAccessToUser(users)) {
-            return saveAgeLimit(ageLimitDTO, ageLimit);
-        } else {
-            ageLimit.setAge("Для пользователя с ролью " + users.getERole() + " обновление невозможно");
-            return ageLimit;
-        }
+
+        return saveAgeLimit(ageLimitDTO, ageLimit);
+
     }
 
 
     public String deleteGenre(Integer ageLimitId, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
-        if (usersService.DataAccessToUser(users)) {
-            Optional<AgeLimit> delete = ageLimitRepository.findAgeLimitById(ageLimitId);
-            delete.ifPresent(ageLimitRepository::delete);
-            return "Возрастное ограничение с id: " + ageLimitId + " удалено";
-        } else {
-            return "Для пользователя с ролью " + users.getERole() + " удаление невозможно";
-        }
+
+        Optional<AgeLimit> delete = ageLimitRepository.findAgeLimitById(ageLimitId);
+        delete.ifPresent(ageLimitRepository::delete);
+        return "Возрастное ограничение с id: " + ageLimitId + " удалено";
     }
 
     private ArrayList<String> isAgeLimitCorrect(AgeLimitDTO ageLimitDTO) {
@@ -129,6 +106,7 @@ public class AgeLimitService {
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             ageLimit.setId(-2000);
+            LOG.error("Error when adding to the database, such an entry already exists: "+ ageLimitDTO.getAgeLimitName());
             ageLimit.setAge("Ошибка при добавлении в бд, такая запись уже есть");
             return ageLimit;
         }

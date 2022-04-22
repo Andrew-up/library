@@ -1,8 +1,7 @@
 package com.netcracker.ageev.library.service;
 
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.users.Employee;
-import com.netcracker.ageev.library.repository.books.BookRentRepository;
-import com.netcracker.ageev.library.repository.books.PriceRepository;
 import com.netcracker.ageev.library.repository.users.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +21,11 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public Employee getEmployeeById(Long id){
+    public Employee getEmployeeById(Long id) {
         Employee employee = new Employee();
         try {
-            return employeeRepository.findEmployeeByUsersId(id).orElseThrow(() -> new NullPointerException("not found"));
-        } catch (NullPointerException e) {
+            return employeeRepository.findEmployeeByUsersId(id).orElseThrow(() -> new DataNotFoundException("not found. getEmployeeById" + id));
+        } catch (DataNotFoundException e) {
             return employee;
         }
     }

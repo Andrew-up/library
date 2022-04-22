@@ -1,10 +1,14 @@
 package com.netcracker.ageev.library.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class RefreshTokenDTO {
+
     private Long idToken;
     private String token;
     private String expiryDateToken;
+
 }

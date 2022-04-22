@@ -1,19 +1,21 @@
 package com.netcracker.ageev.library.model;
 
-import com.netcracker.ageev.library.model.books.Books;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 
 @Entity
-@Data
-public class Image  {
+@Getter
+@Setter
+public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "file_name")
     private String fileName;
 
     @JsonIgnore

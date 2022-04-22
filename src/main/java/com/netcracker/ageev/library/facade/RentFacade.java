@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.facade;
 
 import com.netcracker.ageev.library.dto.RentDTO;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.books.BookRent;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class RentFacade {
             rentDTO.setEmployeeId(bookRent.getEmployeeId().getId());
             rentDTO.setEmployeeName(bookRent.getEmployeeId().getUsers().getEmail());
         }
-        catch (NullPointerException e){
+        catch (DataNotFoundException e){
             rentDTO.setEmployeeId(Long.parseLong("0"));
             rentDTO.setEmployeeName("Работник не найден");
         }

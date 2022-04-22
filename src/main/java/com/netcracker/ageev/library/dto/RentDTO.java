@@ -1,8 +1,10 @@
 package com.netcracker.ageev.library.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class RentDTO {
     private Integer id;
     private String dateIssue;

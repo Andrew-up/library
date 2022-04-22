@@ -10,6 +10,8 @@ public class InvalidLoginResponse {
 
     public InvalidLoginResponse() {
         this.email = "Invalid username";
-        this.password =  "Invalid password";
+        this.password = "Invalid password";
     }
+
+
 }

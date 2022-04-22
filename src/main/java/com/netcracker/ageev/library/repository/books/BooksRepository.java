@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.repository.books;
 
 
+import com.netcracker.ageev.library.model.books.Authors;
 import com.netcracker.ageev.library.model.books.Books;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,28 +22,36 @@ public interface BooksRepository extends JpaRepository<Books, Long> {
 
     Optional<Books> findBooksById(Long id);
 
+    List<Books> findAllByAuthors(Authors authors);
+
 //    Optional<Books> findBooksBySeries(Series series);
+
 
     List<Books> findAllByOrderById();
 
     List<Books> findBooksByBookTitleContainingIgnoreCase(String bookTitle);
 
 
-    @Query("select new Books(b.id, b.bookTitle, b.numberPages, b.translation, b.fullName, b.genreCode, b.languageId, b.ISBN,b.authors, b.releaseDate, b.publisherId, b.series, b.coverId, b.ageLimitCode,b.price,b.countBooks) from Books b where upper(b.bookTitle) like concat('%', upper(?1), '%') order by b.id")
+    @Query("select b from Books b where upper(b.bookTitle) like concat('%', upper(?1), '%') order by b.id")
     List<Books> findAllByBookTitle(String bookTitle);
 
-    @Query("select new Books(b.id, b.bookTitle, b.numberPages, b.translation, b.fullName, b.genreCode, b.languageId, b.ISBN,b.authors, b.releaseDate, b.publisherId, b.series, b.coverId, b.ageLimitCode,b.price,b.countBooks) from Books b where concat(upper(b.authors.firstname), upper(b.authors.lastname),upper(b.authors.patronymic) )  like concat('%', upper(?1), '%') order by b.id")
+    @Query("select b from Books b where concat(upper(b.authors.firstname), upper(b.authors.lastname),upper(b.authors.patronymic))  like concat('%', upper(?1), '%') order by b.id")
     List<Books> findAllByAuthors(String authors);
 
-    @Query("select new Books(b.id, b.bookTitle, b.numberPages, b.translation, b.fullName, b.genreCode, b.languageId, b.ISBN,b.authors, b.releaseDate, b.publisherId, b.series, b.coverId, b.ageLimitCode,b.price,b.countBooks) from Books b where upper(b.genreCode.genre) like concat('%', upper(?1), '%') order by b.id")
+    @Query("select b from Books b where upper(b.genreCode.genre) like concat('%', upper(?1), '%') order by b.id")
     List<Books> findAllByGenres(String genres);
 
-    @Query("select new Books(b.id, b.bookTitle, b.numberPages, b.translation, b.fullName, b.genreCode, b.languageId, b.ISBN,b.authors, b.releaseDate, b.publisherId, b.series, b.coverId, b.ageLimitCode,b.price,b.countBooks) from Books b where upper(b.publisherId.name) like concat('%', upper(?1), '%') order by b.id")
+    @Query("select b from Books b where upper(b.publisherId.name) like concat('%', upper(?1), '%') order by b.id")
     List<Books> findAllByPublisher(String publisher);
 
-    @Query("select new Books(b.id, b.bookTitle, b.numberPages, b.translation, b.fullName, b.genreCode, b.languageId, b.ISBN,b.authors, b.releaseDate, b.publisherId, b.series, b.coverId, b.ageLimitCode,b.price,b.countBooks) from Books b where upper(b.series.seriesName) like concat('%', upper(?1), '%') order by b.id")
+    @Query("select b from Books b where upper(b.series.seriesName) like concat('%', upper(?1), '%') order by b.id")
     List<Books> findAllBySeries(String series);
 
     Page<Books> findAllByOrderById(Pageable pageable);
+
+    Page<Books> findAllByOrderByIdDesc(Pageable pageable);
+
+    @Query("select b from Books b join BookRent br on b = br.booksId group by b.id order by count(br.booksId) desc")
+    Page<Books> findFrequentRent(Pageable pageable);
 
 }

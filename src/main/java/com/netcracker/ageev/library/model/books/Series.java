@@ -1,10 +1,12 @@
 package com.netcracker.ageev.library.model.books;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Series {
 
@@ -16,10 +18,10 @@ public class Series {
     private String seriesName;
 
     @ManyToOne
-    @JoinColumn(name = "authors_id",nullable = false)
+    @JoinColumn(name = "authors_id", nullable = false)
     private Authors authors;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = Books.class)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Books.class)
     private Books books;
 
 }

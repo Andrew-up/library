@@ -1,15 +1,15 @@
 package com.netcracker.ageev.library.model;
 
 import com.netcracker.ageev.library.model.users.Users;
-import lombok.Data;
 import lombok.Getter;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class RefreshToken {
 
     @Id
@@ -20,7 +20,7 @@ public class RefreshToken {
     private String token;
 
     @OneToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users user;
 
     @Column(nullable = false)

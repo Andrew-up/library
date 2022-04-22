@@ -1,6 +1,7 @@
 package com.netcracker.ageev.library.service;
 
 import com.netcracker.ageev.library.dto.AuthorsDTO;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.books.AgeLimit;
 import com.netcracker.ageev.library.model.books.Authors;
 import com.netcracker.ageev.library.repository.books.AuthorsRepository;
@@ -28,11 +29,14 @@ public class AuthorsService {
     public List<Authors> getAllAuthors() {
         return authorsRepository.findAllByOrderById();
     }
+    public List<Authors> getAllAuthorsByInputSearch(String inputSearch) {
+        return authorsRepository.findAllByAuthors(inputSearch);
+    }
 
     public Authors getAuthorsById(Integer id) {
         try {
-            return authorsRepository.findAuthorsById(id).orElseThrow(() -> new NullPointerException("not found"));
-        } catch (NullPointerException e) {
+            return authorsRepository.findAuthorsById(id).orElseThrow(() -> new DataNotFoundException("not found authors id: "+ id));
+        } catch (DataNotFoundException e) {
             return null;
         }
     }
@@ -55,15 +59,15 @@ public class AuthorsService {
         ArrayList<String> listError = new ArrayList<>();
         if (authorsDTO.getFirstname().isEmpty()) {
             listError.add("Имя не корректно");
+            LOG.info("first name is empty");
         }
         if (authorsDTO.getLastname().isEmpty()) {
             listError.add("Фамилия не корректна");
-        }
-        if (authorsDTO.getPatronymic().isEmpty()) {
-            listError.add("Отчество не корректно");
+            LOG.info("last name is empty");
         }
         if (authorsDTO.getDateOfBirth().isEmpty()) {
             listError.add("Дата рождения не корректна");
+            LOG.info("Date of Birth is empty");
         }
         return listError;
     }

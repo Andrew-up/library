@@ -1,10 +1,12 @@
 package com.netcracker.ageev.library.model.books;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Price {
 
@@ -15,7 +17,6 @@ public class Price {
     @Column(nullable = false, unique = true)
     private Double priceRent;
 
-//    @OneToOne(mappedBy = "price")
     private Long priceBook;
 
 }

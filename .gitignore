@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### LOG ###
+/logs
+
+### IMAGE ###
+/image/books
+/image/users

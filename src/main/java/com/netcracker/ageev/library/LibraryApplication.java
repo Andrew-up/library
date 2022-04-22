@@ -1,27 +1,27 @@
 package com.netcracker.ageev.library;
 
+
+import com.netcracker.ageev.library.exception.DataNotFoundException;
+import com.netcracker.ageev.library.service.ImageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 @SpringBootApplication()
 @EnableJpaAuditing
-public class LibraryApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LibraryApplication.class, args);
-		System.out.println("Start app");
-		Date date = new Date();
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(date);
-		calendar.add(Calendar.DATE,30);
-		date = calendar.getTime();
-		System.out.println(date);
-	}
+public class LibraryApplication {
+    private static final Logger LOG = LoggerFactory.getLogger(LibraryApplication.class);
+    public static void main(String[] args) {
+//        for (int i=0; i<1000;i++){
+//            LOG.info("test22");
+//        }
+
+        SpringApplication.run(LibraryApplication.class, args);
+        throw  new DataNotFoundException("test");
+
+    }
 
 }

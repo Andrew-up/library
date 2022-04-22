@@ -19,22 +19,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/books/cover-code")
+@RequestMapping("/api")
 @CrossOrigin
 public class CoverBookController {
 
-    private CoverBookService coverBookService;
-    private CoverBookFacade coverBookFacade;
-    private ResponseErrorValidator responseErrorValidator;
+    private final CoverBookService coverBookService;
+    private final CoverBookFacade coverBookFacade;
+    private final ResponseErrorValidator responseErrorValidator;
 
     @Autowired
-    public CoverBookController(CoverBookService coverBookService, CoverBookFacade coverBookFacade, ResponseErrorValidator responseErrorValidator) {
+    public CoverBookController(CoverBookService coverBookService,
+                               CoverBookFacade coverBookFacade,
+                               ResponseErrorValidator responseErrorValidator) {
         this.coverBookService = coverBookService;
         this.coverBookFacade = coverBookFacade;
         this.responseErrorValidator = responseErrorValidator;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/books/cover-code/all")
     public ResponseEntity<List<CoverBookDTO>> getAllCoverBook() {
         List<CoverBookDTO> coverBookDTOS = coverBookService.getAllCoverBook()
                 .stream()
@@ -43,7 +45,7 @@ public class CoverBookController {
         return new ResponseEntity<>(coverBookDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/staff/books/cover-code/create")
     public ResponseEntity<Object> createCoverBook(@Valid @RequestBody CoverBookDTO coverBookDTO, BindingResult bindingResult, Principal principal) {
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if(!ObjectUtils.isEmpty(listError))return listError;
@@ -52,7 +54,7 @@ public class CoverBookController {
         return new ResponseEntity<>(coverBookDTO1,HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/staff/books/cover-code/update")
     public ResponseEntity<Object> updateCoverBook(@Valid @RequestBody CoverBookDTO coverBookDTO, BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
@@ -61,7 +63,7 @@ public class CoverBookController {
         return new ResponseEntity<>(coverBookDTO1,HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/staff/books/cover-code/delete")
     public ResponseEntity<Object> deleteCoverBook(@Valid @RequestBody String id, BindingResult bindingResult, Principal principal){
         String resultDelete = coverBookService.deleteGenre(Integer.parseInt(id),principal);
         return new ResponseEntity<>(new MessageResponse(resultDelete),HttpStatus.OK);

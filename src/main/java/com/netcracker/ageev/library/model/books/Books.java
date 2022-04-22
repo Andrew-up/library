@@ -10,41 +10,6 @@ import java.io.Serializable;
 @Entity
 public class Books implements Serializable {
 
-
-    public Books(Long id,
-                 String bookTitle,
-                 Integer numberPages,
-                 TranslationBooks translation,
-                 String fullName,
-                 BookGenres bookGenres,
-                 EditionLanguage editionLanguage,
-                 String ISBN,
-                 Authors authors,
-                 String releaseDate,
-                 Publisher publisher,
-                 Series series,
-                 CoverBook coverBook,
-                 AgeLimit ageLimit,
-                 Price price,
-                 Integer countBooks) {
-        this.id = id;
-        this.bookTitle = bookTitle;
-        this.numberPages = numberPages;
-        this.translation = translation;
-        this.fullName = fullName;
-        this.genreCode = bookGenres;
-        this.languageId = editionLanguage;
-        this.ISBN = ISBN;
-        this.authors = authors;
-        this.releaseDate = releaseDate;
-        this.publisherId = publisher;
-        this.series = series;
-        this.coverId = coverBook;
-        this.ageLimitCode = ageLimit;
-        this.price = price;
-        this.countBooks = countBooks;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -75,7 +40,7 @@ public class Books implements Serializable {
     @JoinColumn(name = "coverId")
     private CoverBook coverId;
 
-    @ManyToOne(targetEntity = Series.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Series.class, fetch = FetchType.LAZY)
     private Series series;
 
     @Column(nullable = true)
@@ -162,7 +127,7 @@ public class Books implements Serializable {
         Publisher publisher = new Publisher();
         try {
             if (publisherId.getName() != null) {
-                publisher.setName(translation.getTranslationName());
+                publisher.setName(publisher.getName());
             }
             return publisherId;
         } catch (NullPointerException e) {

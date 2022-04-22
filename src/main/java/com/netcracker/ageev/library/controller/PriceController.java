@@ -18,20 +18,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/books/price")
+@RequestMapping("/api")
 @CrossOrigin
 public class PriceController {
 
-    @Autowired
-    private PriceRentFacade priceFacade;
+
+    private final PriceRentFacade priceFacade;
+    private final PriceService priceService;
+    private final ResponseErrorValidator responseErrorValidator;
 
     @Autowired
-    private PriceService priceService;
+    public PriceController(PriceRentFacade priceFacade,
+                           PriceService priceService,
+                           ResponseErrorValidator responseErrorValidator) {
+        this.priceFacade = priceFacade;
+        this.priceService = priceService;
+        this.responseErrorValidator = responseErrorValidator;
+    }
 
-    @Autowired
-    private ResponseErrorValidator responseErrorValidator;
-
-    @GetMapping("/all")
+    @GetMapping("/books/price/all")
     public ResponseEntity<List<PriceRentDTO>> getAllPrice(){
         List<PriceRentDTO> priceRentDTOList = priceService.getAllPrice()
                 .stream()
@@ -40,17 +45,16 @@ public class PriceController {
         return new ResponseEntity<>(priceRentDTOList, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/staff/books/price/create")
     public ResponseEntity<Object> createPrice(@Valid @RequestBody PriceRentDTO priceRentDTO,
                                                  BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return  listError;
-
         String resultCreate = priceService.createPrice(priceRentDTO,principal);
         return new ResponseEntity<>(new MessageResponse(resultCreate),HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/staff/books/price/update")
     public ResponseEntity<Object> updatePrice(@Valid @RequestBody PriceRentDTO priceRentDTO, BindingResult bindingResult, Principal principal){
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
@@ -58,11 +62,10 @@ public class PriceController {
         return new ResponseEntity<>(new MessageResponse(resultUpdate),HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/staff/books/price/delete")
     public ResponseEntity<Object> deletePrice(@Valid @RequestBody String id, Principal principal){
         String resultDelete = priceService.deletePrice(Integer.parseInt(id),principal);
         return new ResponseEntity<>(new MessageResponse(resultDelete),HttpStatus.OK);
     }
-
 
 }

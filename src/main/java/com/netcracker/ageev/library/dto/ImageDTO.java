@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class PromoCodeDTO {
+public class ImageDTO {
+    private boolean fileCreated;
+    private byte[] bytes;
 
-    private String promoCode;
 }

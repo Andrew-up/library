@@ -1,6 +1,5 @@
 package com.netcracker.ageev.library.payload.request;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

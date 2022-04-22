@@ -1,13 +1,8 @@
 package com.netcracker.ageev.library.service;
 
-import com.netcracker.ageev.library.dto.CoverBookDTO;
 import com.netcracker.ageev.library.dto.SeriesDTO;
-import com.netcracker.ageev.library.model.books.Authors;
-import com.netcracker.ageev.library.model.books.BookGenres;
-import com.netcracker.ageev.library.model.books.CoverBook;
+import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.model.books.Series;
-import com.netcracker.ageev.library.model.users.Users;
-import com.netcracker.ageev.library.repository.books.AuthorsRepository;
 import com.netcracker.ageev.library.repository.books.SeriesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,53 +39,40 @@ public class SeriesService {
     }
 
     public List<Series> getAllSeriesByAuthorsId(Integer authorsId) {
-        List<Series> seriesList= new ArrayList<>();
+        List<Series> seriesList = new ArrayList<>();
         try {
-            return seriesRepository.findAllByAuthorsId(authorsId).orElseThrow(() -> new NullPointerException("not found"));
-        }
-        catch (Throwable throwable){
-            System.out.println("seriesList: "+seriesList);
+            return seriesRepository.findAllByAuthorsId(authorsId).orElseThrow(() -> new DataNotFoundException("not found. getAllSeriesByAuthorsId: " + authorsId));
+        } catch (DataNotFoundException throwable) {
             return seriesList;
         }
-
     }
 
     public Series createSeries(SeriesDTO seriesDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
         ArrayList<String> arrayListError = isSeriesCorrect(seriesDTO);
         Series series = new Series();
-
         if (!ObjectUtils.isEmpty(arrayListError)) {
             series.setSeriesName(arrayListError.toString());
             return series;
         }
-        if (usersService.DataAccessToUser(users)) {
-            return saveSeries(seriesDTO, series);
-        } else {
-            series.setSeriesName("Для пользователя с ролью " + users.getERole() + " добавление невозможно");
-            return series;
-        }
+
+        return saveSeries(seriesDTO, series);
+
     }
 
 
     public Series getSeriesById(Integer id) {
         try {
-            return seriesRepository.findSeriesBySeriesId(id).orElseThrow(() -> new NullPointerException("not found"));
-        } catch (NullPointerException e) {
+            return seriesRepository.findSeriesBySeriesId(id).orElseThrow(() -> new DataNotFoundException("not found. getSeriesById"+ id));
+        } catch (DataNotFoundException e) {
             return null;
         }
     }
 
     public String deleteSeries(Integer seriesId, Principal principal) {
+        Optional<Series> delete = seriesRepository.findSeriesBySeriesId(seriesId);
+        delete.ifPresent(seriesRepository::delete);
+        return "Тип обложки с id: " + seriesId + " удалено";
 
-        Users users = usersService.getUserByPrincipal(principal);
-        if (usersService.DataAccessToUser(users)) {
-            Optional<Series> delete = seriesRepository.findSeriesBySeriesId(seriesId);
-            delete.ifPresent(seriesRepository::delete);
-            return "Тип обложки с id: " + seriesId + " удалено";
-        } else {
-            return "Для пользователя с ролью " + users.getERole() + " удаление невозможно";
-        }
     }
 
     private ArrayList<String> isSeriesCorrect(SeriesDTO seriesDTO) {
@@ -98,6 +80,7 @@ public class SeriesService {
         String regex = "^\\s*$";
         boolean result = seriesDTO.getSeriesName().matches(regex);
         if (result) {
+            LOG.info("Error when adding to the database, such an entry already exists. isSeriesCorrect :" + seriesDTO.getSeriesName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;
@@ -107,31 +90,27 @@ public class SeriesService {
         try {
             series.setSeriesName(seriesDTO.getSeriesName());
             series.setAuthors(authorsService.getAuthorsById(seriesDTO.getAuthorsId()));
-            System.out.println("series: "+series);
+            System.out.println("series: " + series);
             seriesRepository.save(series);
             return series;
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             series.setSeriesId(-2000);
-            series.setSeriesName("Ошибка при добавлении в бд, не выцбран автор");
+            series.setSeriesName("Ошибка при добавлении в бд, не выбран автор");
             return series;
         }
     }
 
     public Series updateSeries(SeriesDTO seriesDTO, Principal principal) {
-        Users users = usersService.getUserByPrincipal(principal);
         ArrayList<String> arrayListError = isSeriesCorrect(seriesDTO);
-        Series series = seriesRepository.findSeriesBySeriesId(seriesDTO.getSeriesId()).orElseThrow(() -> new UsernameNotFoundException("Series not found"));
+        Series series = seriesRepository.findSeriesBySeriesId(seriesDTO.getSeriesId()).orElseThrow(() -> new DataNotFoundException("Series not found. updateSeries: "+ seriesDTO.getSeriesId()));
         if (!ObjectUtils.isEmpty(arrayListError)) {
             series.setSeriesName(arrayListError.toString());
             return series;
         }
-        if (usersService.DataAccessToUser(users)) {
-            return saveSeries(seriesDTO, series);
-        } else {
-            series.setSeriesName("Для пользователя с ролью " + users.getERole() + " обновление невозможно");
-            return series;
-        }
+
+        return saveSeries(seriesDTO, series);
+
     }
 
 }

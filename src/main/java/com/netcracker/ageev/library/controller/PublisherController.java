@@ -1,9 +1,7 @@
 package com.netcracker.ageev.library.controller;
 
-import com.netcracker.ageev.library.dto.CoverBookDTO;
 import com.netcracker.ageev.library.dto.PublisherDTO;
 import com.netcracker.ageev.library.facade.PublisherFacade;
-import com.netcracker.ageev.library.model.books.CoverBook;
 import com.netcracker.ageev.library.model.books.Publisher;
 import com.netcracker.ageev.library.payload.responce.MessageResponse;
 import com.netcracker.ageev.library.service.PublisherService;
@@ -21,24 +19,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/books/publisher")
+@RequestMapping("/api")
 @CrossOrigin
 public class PublisherController {
 
 
-    private PublisherFacade publisherFacade;
-    private PublisherService publisherService;
-    private ResponseErrorValidator responseErrorValidator;
+    private final PublisherFacade publisherFacade;
+    private final PublisherService publisherService;
+    private final ResponseErrorValidator responseErrorValidator;
 
     @Autowired
-    public PublisherController(PublisherFacade publisherFacade, PublisherService publisherService, ResponseErrorValidator responseErrorValidator) {
+    public PublisherController(PublisherFacade publisherFacade,
+                               PublisherService publisherService,
+                               ResponseErrorValidator responseErrorValidator) {
         this.publisherFacade = publisherFacade;
         this.publisherService = publisherService;
         this.responseErrorValidator = responseErrorValidator;
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<PublisherDTO>> getAllPublisher(){
+    @GetMapping("/books/publisher/all")
+    public ResponseEntity<List<PublisherDTO>> getAllPublisher() {
         List<PublisherDTO> publisherDTOS = publisherService.getAllPublisher()
                 .stream()
                 .map(publisherFacade::publisherDTO)
@@ -47,28 +47,33 @@ public class PublisherController {
 
     }
 
-    @PostMapping("create")
-    public ResponseEntity<Object> createPublisher(@Valid @RequestBody PublisherDTO publisherDTO, BindingResult bindingResult, Principal principal){
+    @PostMapping("/staff/books/publisher/create")
+    public ResponseEntity<Object> createPublisher(@Valid @RequestBody PublisherDTO publisherDTO,
+                                                  BindingResult bindingResult,
+                                                  Principal principal) {
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
-        Publisher publisher = publisherService.createPublisher(publisherDTO,principal);
+        Publisher publisher = publisherService.createPublisher(publisherDTO, principal);
         PublisherDTO publisherDTO1 = publisherFacade.publisherDTO(publisher);
-        return new ResponseEntity<>(publisherDTO1,HttpStatus.OK);
+        return new ResponseEntity<>(publisherDTO1, HttpStatus.OK);
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<Object> updatePublisher(@Valid @RequestBody PublisherDTO publisherDTO, BindingResult bindingResult, Principal principal){
+    @PostMapping("/staff/books/publisher/update")
+    public ResponseEntity<Object> updatePublisher(@Valid @RequestBody PublisherDTO publisherDTO,
+                                                  BindingResult bindingResult,
+                                                  Principal principal) {
         ResponseEntity<Object> listError = responseErrorValidator.mappedValidatorService(bindingResult);
         if (!ObjectUtils.isEmpty(listError)) return listError;
-        Publisher publisher = publisherService.updatePublisher(publisherDTO,principal);
+        Publisher publisher = publisherService.updatePublisher(publisherDTO, principal);
         PublisherDTO publisherDTO1 = publisherFacade.publisherDTO(publisher);
-        return new ResponseEntity<>(publisherDTO1,HttpStatus.OK);
+        return new ResponseEntity<>(publisherDTO1, HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<Object> deletePublisher(@Valid @RequestBody String id, BindingResult bindingResult, Principal principal){
-        String resultDelete = publisherService.deletePublisher(Integer.parseInt(id),principal);
-        return new ResponseEntity<>(new MessageResponse(resultDelete),HttpStatus.OK);
+    @PostMapping("/staff/books/publisher/delete")
+    public ResponseEntity<Object> deletePublisher(@Valid @RequestBody String id,
+                                                  Principal principal) {
+        String resultDelete = publisherService.deletePublisher(Integer.parseInt(id), principal);
+        return new ResponseEntity<>(new MessageResponse(resultDelete), HttpStatus.OK);
     }
 
 }
