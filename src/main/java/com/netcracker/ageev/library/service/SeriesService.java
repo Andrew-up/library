@@ -80,7 +80,7 @@ public class SeriesService {
         String regex = "^\\s*$";
         boolean result = seriesDTO.getSeriesName().matches(regex);
         if (result) {
-            LOG.info("Error when adding to the database, such an entry already exists. isSeriesCorrect :" + seriesDTO.getSeriesName());
+            LOG.info("The expression did not pass the record format check. isSeriesCorrect :" + seriesDTO.getSeriesName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;

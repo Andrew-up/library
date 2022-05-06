@@ -73,7 +73,7 @@ public class EditionLanguageService {
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             editionLanguage.setLanguageId(-2000);
-            LOG.error("Error when adding to the database, such an entry already exists. saveEditionLanguageDB :"+ editionLanguageDTO.getLanguageName());
+            LOG.info("Error when adding to the database, such an entry already exists. saveEditionLanguageDB :"+ editionLanguageDTO.getLanguageName());
             editionLanguage.setLanguageName("Ошибка при добавлении в бд, такая запись уже есть");
             return editionLanguage;
         }
@@ -93,6 +93,7 @@ public class EditionLanguageService {
         String regex = "^(([a-zA-Zа-яА-Я]+\\s*){2,3})$";
         boolean result = editionLanguageDTO.getLanguageName().matches(regex);
         if (!result) {
+            LOG.info("The expression did not pass the record format check. isEditionLanguageCorrect: "+ editionLanguageDTO.getLanguageName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;

@@ -76,7 +76,7 @@ public class BookGenresService {
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             bookGenres.setBookGenresId(-2000);
-            LOG.error("Error when adding to the database, such an entry already exists. getBookGenres: "+ bookGenresDTO.getGenresName());
+            LOG.info("Error when adding to the database, such an entry already exists. getBookGenres: "+ bookGenresDTO.getGenresName());
             bookGenres.setGenre("Ошибка при добавлении в бд, такая запись уже есть");
             return bookGenres;
         }

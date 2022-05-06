@@ -58,7 +58,7 @@ public class PublisherService {
         String regex = "^([а-яА-Яa-zA-Z]+).*$";
         boolean result = publisherDTO.getPublisherName().matches(regex);
         if (!result) {
-            LOG.error("Error when adding to the database, such an entry already exists. isPublisherCorrect :" + publisherDTO.getPublisherName());
+            LOG.info("Error when adding to the database, such an entry already exists. isPublisherCorrect :" + publisherDTO.getPublisherName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;

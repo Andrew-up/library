@@ -86,7 +86,7 @@ public class CoverBookService {
         String regex = "^([0-9])?([а-яА-Яa-zA-Z]+\\s*,*\\.*[а-яА-Яa-zA-Z]*){1,5}$";
         boolean result = coverBookDTO.getCoverBookName().matches(regex);
         if (!result) {
-            LOG.error("The expression did not pass the record format check. isGenreCorrect: "+ coverBookDTO.getCoverBookName());
+            LOG.info("The expression did not pass the record format check. isGenreCorrect: "+ coverBookDTO.getCoverBookName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;

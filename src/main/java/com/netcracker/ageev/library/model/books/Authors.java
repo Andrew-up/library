@@ -34,7 +34,6 @@ public class Authors {
     @Column(nullable = true)
     private String dateOfBirth;
 
-//    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = Series.class,mappedBy = "authors")
     @Column(nullable = true)
     private Integer seriesId;
 

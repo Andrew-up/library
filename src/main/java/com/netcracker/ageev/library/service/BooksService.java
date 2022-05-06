@@ -97,7 +97,7 @@ public class BooksService {
     public List<Books> getAllBooksByInputSearch(String inputSearch, String typeSearch) {
         List<Books> booksListSearch;
         System.out.println("Область поиска: "+typeSearch);
-        if (typeSearch.equals("bookTitle")) {
+        if (typeSearch.equals("booktitle")) {
             booksListSearch = booksRepository.findAllByBookTitle(inputSearch);
         }
          else if (typeSearch.equals("authors")) {

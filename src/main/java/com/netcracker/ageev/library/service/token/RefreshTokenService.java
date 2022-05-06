@@ -1,7 +1,5 @@
 package com.netcracker.ageev.library.service.token;
 
-import com.netcracker.ageev.library.controller.AuthController;
-import com.netcracker.ageev.library.exception.DataNotFoundException;
 import com.netcracker.ageev.library.exception.TokenRefreshException;
 import com.netcracker.ageev.library.model.RefreshToken;
 import com.netcracker.ageev.library.repository.RefreshTokenRepository;
@@ -43,15 +41,14 @@ public class RefreshTokenService {
             refreshToken.setUser(usersRepository.findById(userId).orElse(null));
             refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
             refreshToken.setToken(UUID.randomUUID().toString());
-            LOG.debug("refresh token at the user: "+refreshToken.getUser().getEmail() +" replaced");
+            LOG.debug("refresh token at the user: " + refreshToken.getUser().getEmail() + " replaced");
             return refreshTokenRepository.save(refreshToken);
         }
-
         refreshToken = new RefreshToken();
         refreshToken.setUser(usersRepository.findById(userId).orElse(null));
         refreshToken.setExpiryDate(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION_TIME));
         refreshToken.setToken(UUID.randomUUID().toString());
-        LOG.debug("refresh token at the user: "+refreshToken.getUser().getEmail() +" added");
+        LOG.debug("refresh token at the user: " + refreshToken.getUser().getEmail() + " added");
         return refreshTokenRepository.save(refreshToken);
     }
 
@@ -62,7 +59,6 @@ public class RefreshTokenService {
         }
         return token;
     }
-
 
     @Transactional
     public int deleteByUserId(Long userId) {

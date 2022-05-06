@@ -93,9 +93,8 @@ public class TranslationService {
         String regex = "^(([a-zA-Zа-яА-Я]*\\s*){2,3})$";
 
         boolean result = translationDTO.getTranslationName().matches(regex);
-        System.out.println("result:" + result);
-
         if (!result || translationDTO.getTranslationName().equals("")) {
+            LOG.info("Error when adding to the database, such an entry already exists. isTranslationCorrect :" + translationDTO.getTranslationName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
 

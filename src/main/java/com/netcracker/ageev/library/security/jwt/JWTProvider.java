@@ -53,7 +53,7 @@ public class JWTProvider {
                 SignatureException |
                 UnsupportedJwtException |
                 IllegalArgumentException exception) {
-            LOG.error(exception.getMessage());
+//            LOG.error(exception.getMessage());
             return false;
         }
     }

@@ -76,6 +76,7 @@ public class AgeLimitService {
         String regex = "(^[0-9]{1,2}\\+)|(^[0-9]{1,2}-[0-9]{1,2})";
         boolean result = ageLimitDTO.getAgeLimitName().matches(regex);
         if (!result) {
+            LOG.info("The expression did not pass the record format check. isAgeLimitCorrect :" + ageLimitDTO.getAgeLimitName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         if (result) {
@@ -106,7 +107,7 @@ public class AgeLimitService {
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             ageLimit.setId(-2000);
-            LOG.error("Error when adding to the database, such an entry already exists: "+ ageLimitDTO.getAgeLimitName());
+            LOG.info("Error when adding to the database, such an entry already exists: "+ ageLimitDTO.getAgeLimitName());
             ageLimit.setAge("Ошибка при добавлении в бд, такая запись уже есть");
             return ageLimit;
         }

@@ -26,8 +26,6 @@ import java.security.Principal;
 @PermitAll()
 public class ImageUploadController {
     private static final Logger LOG = LoggerFactory.getLogger(ImageUploadController.class);
-
-
     private final ImageService imageService;
 
     @Autowired

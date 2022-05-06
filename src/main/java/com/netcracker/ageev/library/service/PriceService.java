@@ -66,7 +66,7 @@ public class PriceService {
         String regex = "^[1-9]+[0-9]*(\\.[1-9]*)?$";
         boolean result = priceRentDTO.getPriceName().matches(regex);
         if (!result) {
-            LOG.error("Error when adding to the database, such an entry already exists. isPriceBookCorrect :" + priceRentDTO.getPriceName());
+            LOG.info("The expression did not pass the record format check. isPriceBookCorrect :" + priceRentDTO.getPriceName());
             listError.add("Выражение не прошло проверку по формату записи");
         }
         return listError;
